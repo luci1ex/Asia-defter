@@ -116,13 +116,17 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
 
 .settle-item{display:flex;justify-content:space-between;align-items:center;padding:10px 2px;border-bottom:1px solid var(--line);font-size:14px;}
 .settle-item:last-child{border-bottom:none;}
-.settle-item.settled{opacity:.45;}
 .settle-btn{background:var(--panel-alt);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 12px;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
-.settle-btn.is-settled{border-color:var(--green);color:var(--green);}
 .settle-total{font-size:13px;color:var(--text-dim);margin-bottom:10px;}
 .settle-all-btn{background:var(--green);color:#0F1C18;border:none;border-radius:7px;padding:11px 14px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:14px;cursor:pointer;width:100%;margin-bottom:14px;}
 
 .chart-wrap{width:100%;}
+
+.exp-row{display:flex;gap:8px;margin-bottom:10px;}
+.exp-row input{background:var(--panel-alt);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 10px;font-family:'Tajawal',sans-serif;font-size:14px;}
+.exp-row input[type=text]{flex:1;min-width:0;}
+.exp-row input[type=number]{width:110px;font-family:'JetBrains Mono',monospace;direction:ltr;text-align:center;}
+.exp-total{font-size:13px;color:var(--text-dim);margin-bottom:10px;}
 
 #detailsContainer{display:none;}
 
@@ -155,6 +159,9 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
         <button data-target="panel-weekly">📆 الربح الأسبوعي</button>
         <button data-target="panel-golden">🏆 أفضل 5 أيام</button>
         <button data-target="panel-settle">💰 تعبئات يوسف</button>
+        <button data-target="panel-exp-ali-personal">🧾 مصاريف علي الشخصية</button>
+        <button data-target="panel-exp-ali-work">💼 مصاريف علي للشغل</button>
+        <button data-target="panel-exp-hussein-personal">🧾 مصاريف حسين الشخصية</button>
       </div>
     </div>
     <button class="signout-btn" id="signOutBtn">خروج</button>
@@ -252,8 +259,41 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
     <div class="panel" id="panel-settle">
       <h2>💰 تعبئات يوسف — تصفية</h2>
       <button class="settle-all-btn" id="settleAllBtn">تصفية الكل بضغطة زر</button>
-      <p class="settle-total" id="settleTotal">كل شي مصفى</p>
+      <p class="settle-total" id="settleTotal">لا توجد تعبئات غير مصفاة</p>
       <div id="settleList"><div class="empty">لا توجد تعبئات مسجلة</div></div>
+    </div>
+
+    <div class="panel" id="panel-exp-ali-personal">
+      <h2>🧾 مصاريف علي الشخصية</h2>
+      <p class="exp-total" id="expTotal-ali-personal">الإجمالي: $0.00</p>
+      <div class="exp-row">
+        <input type="number" step="0.01" id="expAmount-ali-personal" placeholder="$">
+        <input type="text" id="expNote-ali-personal" placeholder="وصف (اختياري)">
+      </div>
+      <button class="btn btn-primary" id="expAddBtn-ali-personal">إضافة مصروف</button>
+      <div id="expList-ali-personal"><div class="empty">لا توجد مصاريف مسجلة</div></div>
+    </div>
+
+    <div class="panel" id="panel-exp-ali-work">
+      <h2>💼 مصاريف علي للشغل</h2>
+      <p class="exp-total" id="expTotal-ali-work">الإجمالي: $0.00</p>
+      <div class="exp-row">
+        <input type="number" step="0.01" id="expAmount-ali-work" placeholder="$">
+        <input type="text" id="expNote-ali-work" placeholder="وصف (اختياري)">
+      </div>
+      <button class="btn btn-primary" id="expAddBtn-ali-work">إضافة مصروف</button>
+      <div id="expList-ali-work"><div class="empty">لا توجد مصاريف مسجلة</div></div>
+    </div>
+
+    <div class="panel" id="panel-exp-hussein-personal">
+      <h2>🧾 مصاريف حسين الشخصية</h2>
+      <p class="exp-total" id="expTotal-hussein-personal">الإجمالي: $0.00</p>
+      <div class="exp-row">
+        <input type="number" step="0.01" id="expAmount-hussein-personal" placeholder="$">
+        <input type="text" id="expNote-hussein-personal" placeholder="وصف (اختياري)">
+      </div>
+      <button class="btn btn-primary" id="expAddBtn-hussein-personal">إضافة مصروف</button>
+      <div id="expList-hussein-personal"><div class="empty">لا توجد مصاريف مسجلة</div></div>
     </div>
 
   </div>
@@ -293,13 +333,16 @@ const provider = new GoogleAuthProvider();
 
 const LIWA_ASIA = 52387;
 const FARIS_ASIA = 15707;
+const EXPENSE_LISTS = ['ali-personal', 'ali-work', 'hussein-personal'];
 
 let currentUid = null;
 let entries = [];
 let rateHistory = [];
+let expenses = [];
 let rates = { buy: 5.9, sell: 6.1 };
 let unsubEntries = null;
 let unsubRateHistory = null;
+let unsubExpenses = null;
 let selectedMonth = null;
 
 // ---------- date helpers ----------
@@ -319,6 +362,16 @@ function inferDateObj(day, month){
   return candidate;
 }
 function monthKeyOf(iso){ return iso ? iso.slice(0,7) : ''; }
+function isoOfEntry(e){
+  if(e.isoDate) return e.isoDate;
+  if(e.ts) return isoFromDate(new Date(e.ts));
+  return '';
+}
+function displayOfEntry(e){
+  if(e.date) return e.date;
+  if(e.ts){ const d = new Date(e.ts); return `${d.getDate()}/${d.getMonth()+1}`; }
+  return '';
+}
 function currentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`; }
 function currentWeekRange(){
   const now = new Date();
@@ -427,10 +480,12 @@ onAuthStateChanged(auth, async (user) => {
     await loadRates();
     subscribeEntries();
     subscribeRateHistory();
+    subscribeExpenses();
   } else {
     currentUid = null;
     if(unsubEntries) unsubEntries();
     if(unsubRateHistory) unsubRateHistory();
+    if(unsubExpenses) unsubExpenses();
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
   }
@@ -533,6 +588,36 @@ function subscribeRateHistory(){
   });
 }
 
+function subscribeExpenses(){
+  const q = query(collection(db, 'users', currentUid, 'expenses'), orderBy('ts', 'desc'));
+  unsubExpenses = onSnapshot(q, (snapshot) => {
+    expenses = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    render();
+  });
+}
+
+async function addExpense(listId){
+  const amountInput = document.getElementById(`expAmount-${listId}`);
+  const noteInput = document.getElementById(`expNote-${listId}`);
+  const amount = parseFloat(amountInput.value);
+  if(!amount || amount <= 0) return;
+  const note = noteInput.value.trim();
+  const info = todayDateInfo();
+  try{
+    await addDoc(collection(db, 'users', currentUid, 'expenses'), {
+      listId, amount, note, date: info.display, isoDate: info.iso, ts: Date.now()
+    });
+    amountInput.value = '';
+    noteInput.value = '';
+  }catch(err){ console.error(err); }
+}
+
+async function deleteExpense(id){
+  try{
+    await deleteDoc(doc(db, 'users', currentUid, 'expenses', id));
+  }catch(err){ console.error(err); }
+}
+
 async function addEntry(entry){
   try{
     await addDoc(collection(db, 'users', currentUid, 'entries'), { ...entry, ts: Date.now() });
@@ -545,9 +630,9 @@ async function deleteEntry(id){
   }catch(err){ console.error(err); }
 }
 
-async function toggleSettled(id, current){
+async function toggleSettled(id){
   try{
-    await updateDoc(doc(db, 'users', currentUid, 'entries', id), { settled: !current });
+    await updateDoc(doc(db, 'users', currentUid, 'entries', id), { settled: true });
   }catch(err){ console.error(err); }
 }
 
@@ -613,7 +698,7 @@ function render(){
   const buy = parseFloat(document.getElementById('buyRate').value) || 0;
   const sell = parseFloat(document.getElementById('sellRate').value) || 0;
 
-  const monthEntries = entries.filter(e => monthKeyOf(e.isoDate) === selectedMonth);
+  const monthEntries = entries.filter(e => monthKeyOf(isoOfEntry(e)) === selectedMonth);
   const t = computeTotals(monthEntries, buy, sell);
 
   document.getElementById('heroProfit').textContent = fmtMoney(t.profit);
@@ -623,8 +708,8 @@ function render(){
 
   const dailyMap = {};
   monthEntries.forEach(e=>{
-    const iso = e.isoDate || '';
-    if(!dailyMap[iso]) dailyMap[iso] = { sold:0, fill:0, display: e.date || '' };
+    const iso = isoOfEntry(e);
+    if(!dailyMap[iso]) dailyMap[iso] = { sold:0, fill:0, display: displayOfEntry(e) };
     if(e.type==='sale') dailyMap[iso].sold += e.asia;
     else dailyMap[iso].fill += e.asia;
   });
@@ -637,7 +722,7 @@ function render(){
     : '';
 
   const { startIso, endIso } = currentWeekRange();
-  const weekEntries = entries.filter(e => e.isoDate >= startIso && e.isoDate <= endIso);
+  const weekEntries = entries.filter(e => { const iso = isoOfEntry(e); return iso >= startIso && iso <= endIso; });
   const wt = computeTotals(weekEntries, buy, sell);
   document.getElementById('weekProfit').textContent = fmtMoney(wt.profit);
   document.getElementById('weekSold').textContent = fmtNum(wt.soldAsia);
@@ -687,9 +772,9 @@ function render(){
 
   const allDailyMap = {};
   entries.forEach(e=>{
-    const iso = e.isoDate || '';
+    const iso = isoOfEntry(e);
     if(!iso) return;
-    if(!allDailyMap[iso]) allDailyMap[iso] = { sold:0, display: e.date || '' };
+    if(!allDailyMap[iso]) allDailyMap[iso] = { sold:0, display: displayOfEntry(e) };
     if(e.type==='sale') allDailyMap[iso].sold += e.asia;
   });
   const goldenDays = Object.keys(allDailyMap).map(iso=>{
@@ -719,31 +804,49 @@ function render(){
   }
 
   const fills = entries.filter(e=>e.type==='fill');
-  const unsettledTotal = fills.filter(e=>!e.settled).reduce((s,e)=>s+e.asia,0);
+  const unsettledFills = fills.filter(e=>!e.settled);
+  const unsettledTotal = unsettledFills.reduce((s,e)=>s+e.asia,0);
   document.getElementById('settleTotal').textContent = unsettledTotal > 0
     ? `غير مصفى: ${fmtNum(unsettledTotal)} أسيا`
-    : 'كل شي مصفى ✅';
+    : 'لا توجد تعبئات غير مصفاة';
   document.getElementById('settleAllBtn').style.display = unsettledTotal > 0 ? 'block' : 'none';
 
   const settleList = document.getElementById('settleList');
-  if(fills.length === 0){
-    settleList.innerHTML = '<div class="empty">لا توجد تعبئات مسجلة</div>';
+  if(unsettledFills.length === 0){
+    settleList.innerHTML = '<div class="empty">لا توجد تعبئات غير مصفاة</div>';
   } else {
-    settleList.innerHTML = fills.map(e=>`<div class="settle-item ${e.settled ? 'settled' : ''}">
+    settleList.innerHTML = unsettledFills.map(e=>`<div class="settle-item">
       <div>
         <div class="num">${fmtNum(e.asia)} أسيا</div>
-        <div class="log-meta">${e.date || ''} — ${(e.raw||'').slice(0,30)}</div>
+        <div class="log-meta">${displayOfEntry(e)} — ${(e.raw||'').slice(0,30)}</div>
       </div>
-      <button class="settle-btn ${e.settled ? 'is-settled' : ''}" data-id="${e.id}" data-current="${e.settled ? '1':'0'}">
-        ${e.settled ? 'مصفى ✓' : 'تصفية'}
-      </button>
+      <button class="settle-btn" data-id="${e.id}">تصفية</button>
     </div>`).join('');
     settleList.querySelectorAll('.settle-btn').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        toggleSettled(btn.getAttribute('data-id'), btn.getAttribute('data-current')==='1');
-      });
+      btn.addEventListener('click', ()=> toggleSettled(btn.getAttribute('data-id')));
     });
   }
+
+  EXPENSE_LISTS.forEach(listId=>{
+    const list = expenses.filter(e=>e.listId===listId);
+    const total = list.reduce((s,e)=>s+e.amount,0);
+    document.getElementById(`expTotal-${listId}`).textContent = `الإجمالي: ${fmtMoney(total)}`;
+    const listEl = document.getElementById(`expList-${listId}`);
+    if(list.length === 0){
+      listEl.innerHTML = '<div class="empty">لا توجد مصاريف مسجلة</div>';
+    } else {
+      listEl.innerHTML = list.map(e=>`<div class="log-item">
+        <div>
+          <div class="num">${fmtMoney(e.amount)}</div>
+          <div class="log-meta">${e.date || ''}${e.note ? ' — '+e.note : ''}</div>
+        </div>
+        <button class="del-btn" data-id="${e.id}">حذف</button>
+      </div>`).join('');
+      listEl.querySelectorAll('.del-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=> deleteExpense(btn.getAttribute('data-id')));
+      });
+    }
+  });
 
   const logList = document.getElementById('logList');
   if(monthEntries.length === 0){
@@ -755,7 +858,7 @@ function render(){
       const cls = e.type==='sale' ? 'sale' : 'fill';
       return `<div class="log-item">
         <div>
-          <div>${label} <span class="log-meta">${e.date || ''}</span></div>
+          <div>${label} <span class="log-meta">${displayOfEntry(e)}</span></div>
           <div class="log-meta">${(e.raw||'').slice(0,40)}</div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;">
@@ -800,6 +903,10 @@ document.getElementById('buyRate').addEventListener('change', saveRates);
 document.getElementById('sellRate').addEventListener('change', saveRates);
 
 document.getElementById('settleAllBtn').addEventListener('click', settleAll);
+
+EXPENSE_LISTS.forEach(listId=>{
+  document.getElementById(`expAddBtn-${listId}`).addEventListener('click', ()=> addExpense(listId));
+});
 
 document.getElementById('resetBtn').addEventListener('click', async ()=>{
   if(confirm('متأكد تريد تصفير كل البيانات من كل الأشهر؟ هذا الإجراء لا يمكن التراجع عنه.')){
