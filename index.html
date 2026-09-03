@@ -81,6 +81,7 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
 .stat .label{font-size:12px;color:var(--text-dim);margin-bottom:4px;}
 .stat .value{font-size:19px;font-weight:700;}
 .stat .value.gold{color:var(--gold);}
+.gold{color:var(--gold);}
 .stat .value.rose{color:var(--rose);}
 .stat.wide{grid-column:1/3;}
 
@@ -159,6 +160,11 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
   </div>
 
   <div class="panel">
+    <h2>الأرباح حسب اليوم</h2>
+    <div id="dailyList"><div class="empty">لا توجد عمليات مسجلة</div></div>
+  </div>
+
+  <div class="panel">
     <h2>السجل الكامل</h2>
     <div id="logList"><div class="empty">لا توجد عمليات مسجلة</div></div>
     <p class="sync-note">يتزامن تلقائي مع حسابك — يفتح بنفس البيانات من أي جهاز</p>
@@ -206,6 +212,19 @@ const ARABIC_DIGITS = '٠١٢٣٤٥٦٧٨٩';
 function toWesternDigits(s){ return s.replace(/[٠-٩]/g, d => String(ARABIC_DIGITS.indexOf(d))); }
 function stripControlChars(s){ return s.replace(/[\u200E\u200F\u202A-\u202E]/g, ''); }
 function stripMeta(s){ const m = s.match(/^\[.*?\]\s*[^:]*:\s*(.*)$/); return m ? m[1] : s; }
+function todayLabel(){ const n = new Date(); return `${n.getDate()}/${n.getMonth()+1}`; }
+function extractDate(rawLine){
+  const cleaned = toWesternDigits(stripControlChars(rawLine));
+  const m = cleaned.match(/^\[(\d{1,2})\/(\d{1,2})/);
+  if(m) return `${parseInt(m[1],10)}/${parseInt(m[2],10)}`;
+  return todayLabel();
+}
+function dateSortKey(d){
+  if(!d) return -1;
+  const parts = d.split('/').map(Number);
+  if(parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) return -1;
+  return parts[1]*100 + parts[0];
+}
 function normalize(s){ return toWesternDigits(stripControlChars(s)).replace(/[أإآ]/g,'ا'); }
 function levenshtein(a, b){
   const dp = Array.from({length:a.length+1}, (_,i)=>[i, ...Array(b.length).fill(0)]);
@@ -232,6 +251,7 @@ function parseMessages(text){
   for(const raw of lines){
     const bodyRaw = stripMeta(stripControlChars(raw)).trim();
     if(!bodyRaw) continue;
+    const entryDate = extractDate(raw);
     const line = normalize(bodyRaw);
     const words = line.split(/\s+/).filter(Boolean);
 
@@ -247,7 +267,7 @@ function parseMessages(text){
           asia = parseInt(numStr, 10);
           if(asia < 1000) asia *= 1000;
         }
-        if(!isNaN(asia)) added.push({type:'fill', category:null, asia, raw:bodyRaw});
+        if(!isNaN(asia)) added.push({type:'fill', category:null, asia, raw:bodyRaw, date:entryDate});
       }
       continue;
     }
@@ -257,14 +277,14 @@ function parseMessages(text){
     const numMatch = line.match(/\d+/);
     const qty = numMatch ? parseInt(numMatch[0], 10) : 1;
 
-    if(hasLiwa){ added.push({type:'sale', category:'لواء', asia:LIWA_ASIA*qty, raw:bodyRaw}); continue; }
-    if(hasFaris){ added.push({type:'sale', category:'فارس', asia:FARIS_ASIA*qty, raw:bodyRaw}); continue; }
+    if(hasLiwa){ added.push({type:'sale', category:'لواء', asia:LIWA_ASIA*qty, raw:bodyRaw, date:entryDate}); continue; }
+    if(hasFaris){ added.push({type:'sale', category:'فارس', asia:FARIS_ASIA*qty, raw:bodyRaw, date:entryDate}); continue; }
 
     const hasTakeVerb = findKeyword(words, 'اخذت', 1) || findKeyword(words, 'اخدت', 1);
     if(hasTakeVerb && numMatch){
       const customAsia = parseInt(numMatch[0], 10);
       if(!isNaN(customAsia) && customAsia > 0){
-        added.push({type:'sale', category:'مخصص', asia:customAsia, raw:bodyRaw});
+        added.push({type:'sale', category:'مخصص', asia:customAsia, raw:bodyRaw, date:entryDate});
       }
     }
   }
@@ -375,6 +395,33 @@ function render(){
   document.getElementById('statRevenue').textContent = fmtMoney(revenue);
   document.getElementById('statProfit').textContent = fmtMoney(profit);
 
+  const dailyMap = {};
+  entries.forEach(e=>{
+    const d = e.date || 'بدون تاريخ';
+    if(!dailyMap[d]) dailyMap[d] = {sold:0, fill:0};
+    if(e.type==='sale') dailyMap[d].sold += e.asia;
+    else dailyMap[d].fill += e.asia;
+  });
+  const dailyList = document.getElementById('dailyList');
+  const dailyKeys = Object.keys(dailyMap).sort((a,b)=> dateSortKey(b) - dateSortKey(a));
+  if(dailyKeys.length === 0){
+    dailyList.innerHTML = '<div class="empty">لا توجد عمليات مسجلة</div>';
+  } else {
+    dailyList.innerHTML = dailyKeys.map(d=>{
+      const day = dailyMap[d];
+      const dayCost = (day.sold/10000)*buy;
+      const dayRevenue = (day.sold/10000)*sell;
+      const dayProfit = dayRevenue - dayCost;
+      return `<div class="log-item">
+        <div>
+          <div class="num">${d}</div>
+          <div class="log-meta">مبيعات ${fmtNum(day.sold)} · تعبئة ${fmtNum(day.fill)}</div>
+        </div>
+        <div class="log-amt num gold">${fmtMoney(dayProfit)}</div>
+      </div>`;
+    }).join('');
+  }
+
   const logList = document.getElementById('logList');
   if(entries.length === 0){
     logList.innerHTML = '<div class="empty">لا توجد عمليات مسجلة</div>';
@@ -410,10 +457,10 @@ document.getElementById('parseBtn').addEventListener('click', async ()=>{
 });
 
 document.getElementById('addLiwa').addEventListener('click', ()=>{
-  addEntry({type:'sale', category:'لواء', asia:LIWA_ASIA, raw:'إضافة يدوية'});
+  addEntry({type:'sale', category:'لواء', asia:LIWA_ASIA, raw:'إضافة يدوية', date:todayLabel()});
 });
 document.getElementById('addFaris').addEventListener('click', ()=>{
-  addEntry({type:'sale', category:'فارس', asia:FARIS_ASIA, raw:'إضافة يدوية'});
+  addEntry({type:'sale', category:'فارس', asia:FARIS_ASIA, raw:'إضافة يدوية', date:todayLabel()});
 });
 document.getElementById('addFill').addEventListener('click', ()=>{
   const val = prompt('كم عبيت؟ (مثلا 20 يعني 20,000)');
@@ -421,7 +468,7 @@ document.getElementById('addFill').addEventListener('click', ()=>{
   let asia = parseInt(val.replace(/[.,]/g,''), 10);
   if(isNaN(asia)) return;
   if(asia < 1000 && !val.includes('.') && !val.includes(',')) asia *= 1000;
-  addEntry({type:'fill', category:null, asia, raw:'تعبئة يدوية: '+val});
+  addEntry({type:'fill', category:null, asia, raw:'تعبئة يدوية: '+val, date:todayLabel()});
 });
 
 document.getElementById('buyRate').addEventListener('change', saveRates);
