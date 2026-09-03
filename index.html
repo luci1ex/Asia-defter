@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دفتر أسيا</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root{
+  --bg:#0F1C18;
+  --panel:#16241F;
+  --panel-alt:#1D2E27;
+  --text:#EDE6D6;
+  --text-dim:#8FA69C;
+  --gold:#D4AF37;
+  --gold-dim:#9C8433;
+  --rose:#C1544A;
+  --green:#5FA97E;
+  --line:#28382F;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Tajawal',sans-serif;
+  padding:20px 16px 60px;
+  min-height:100vh;
+}
+.num{font-family:'JetBrains Mono',monospace;direction:ltr;unicode-bidi:plaintext;}
+
+/* login gate */
+#loginScreen{
+  min-height:80vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:18px;
+}
+#loginScreen h1{font-size:22px;margin:0;color:var(--gold);}
+#loginScreen p{color:var(--text-dim);font-size:14px;max-width:320px;margin:0;}
+.google-btn{
+  display:flex;align-items:center;gap:10px;
+  background:#fff;color:#1F1F1F;
+  border:none;border-radius:8px;
+  padding:12px 20px;font-family:'Tajawal',sans-serif;
+  font-weight:700;font-size:15px;cursor:pointer;
+}
+.google-btn img{width:18px;height:18px;}
+
+#app{display:none;}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.user-chip{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dim);}
+.user-chip img{width:24px;height:24px;border-radius:50%;}
+.signout-btn{background:none;border:none;color:var(--text-dim);font-size:12px;text-decoration:underline;padding:4px;}
+
+header{margin-bottom:22px;}
+.eyebrow{color:var(--text-dim);font-size:13px;margin:0 0 6px;}
+.hero-num{font-size:44px;font-weight:900;color:var(--gold);line-height:1.1;margin:0;}
+.hero-sub{color:var(--text-dim);font-size:13px;margin-top:6px;}
+
+.panel{background:var(--panel);border-top:2px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px;}
+.panel h2{font-size:14px;font-weight:700;margin:0 0 12px;color:var(--text-dim);}
+.rates{display:flex;gap:10px;}
+.rate-field{flex:1;}
+.rate-field label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:5px;}
+.rate-field input{width:100%;background:var(--panel-alt);border:1px solid var(--line);color:var(--text);font-family:'JetBrains Mono',monospace;direction:ltr;text-align:center;font-size:16px;padding:9px 6px;border-radius:7px;}
+textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:10px;font-family:'Tajawal',sans-serif;font-size:14px;resize:vertical;}
+.btn{border:none;border-radius:7px;padding:11px 14px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:14px;cursor:pointer;}
+.btn-primary{background:var(--gold);color:#1A1305;width:100%;margin-top:10px;}
+.btn-primary:active{background:var(--gold-dim);}
+.quickrow{display:flex;gap:8px;}
+.btn-quick{flex:1;background:var(--panel-alt);color:var(--text);border:1px solid var(--line);}
+.btn-quick:active{border-color:var(--gold);}
+
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.stat{background:var(--panel-alt);border-radius:8px;padding:12px;}
+.stat .label{font-size:12px;color:var(--text-dim);margin-bottom:4px;}
+.stat .value{font-size:19px;font-weight:700;}
+.stat .value.gold{color:var(--gold);}
+.stat .value.rose{color:var(--rose);}
+.stat.wide{grid-column:1/3;}
+
+.log-item{display:flex;justify-content:space-between;align-items:center;padding:10px 2px;border-bottom:1px solid var(--line);font-size:14px;}
+.log-item:last-child{border-bottom:none;}
+.log-meta{color:var(--text-dim);font-size:12px;margin-top:2px;}
+.log-amt{font-weight:700;}
+.log-amt.sale{color:var(--rose);}
+.log-amt.fill{color:var(--green);}
+.del-btn{background:none;border:none;color:var(--text-dim);font-size:12px;padding:6px;cursor:pointer;}
+.empty{color:var(--text-dim);font-size:13px;text-align:center;padding:14px 0;}
+.reset-link{display:block;text-align:center;color:var(--text-dim);font-size:12px;margin-top:18px;background:none;border:none;width:100%;padding:8px;}
+.sync-note{font-size:11px;color:var(--text-dim);text-align:center;margin-top:6px;}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <h1>دفتر أسيا</h1>
+  <p>سجل دخول بحساب كوكل حتى تنحفظ بياناتك دائم وتقدر تفتحها من أي جهاز.</p>
+  <button class="google-btn" id="googleSignIn">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+    تسجيل الدخول بحساب Google
+  </button>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <div class="user-chip">
+      <img id="userPhoto" src="" alt="">
+      <span id="userName"></span>
+    </div>
+    <button class="signout-btn" id="signOutBtn">تسجيل خروج</button>
+  </div>
+
+  <header>
+    <p class="eyebrow">صافي الربح حتى الآن</p>
+    <p class="hero-num num" id="heroProfit">$0.00</p>
+    <p class="hero-sub" id="heroSub">لا توجد عمليات بعد</p>
+  </header>
+
+  <div class="panel">
+    <h2>الأسعار (لكل 10,000 أسيا)</h2>
+    <div class="rates">
+      <div class="rate-field"><label>سعر الشراء $</label><input type="number" step="0.01" id="buyRate" value="5.9"></div>
+      <div class="rate-field"><label>سعر البيع $</label><input type="number" step="0.01" id="sellRate" value="6.1"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>لصق رسائل واتساب</h2>
+    <textarea id="pasteBox" placeholder="الصق نص الرسائل كما هي، حتى لو فيها [تاريخ ووقت] واسم المرسل، وحتى لو فيها غلط إملائي"></textarea>
+    <button class="btn btn-primary" id="parseBtn">تحليل وإضافة</button>
+  </div>
+
+  <div class="panel">
+    <h2>إضافة يدوية</h2>
+    <div class="quickrow">
+      <button class="btn btn-quick" id="addLiwa">+ لواء</button>
+      <button class="btn btn-quick" id="addFaris">+ فارس</button>
+      <button class="btn btn-quick" id="addFill">+ تعبئة</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>الملخص</h2>
+    <div class="stat-grid">
+      <div class="stat"><div class="label">إجمالي المبيعات (أسيا)</div><div class="value num" id="statSoldAsia">0</div></div>
+      <div class="stat"><div class="label">إجمالي التعبئة (أسيا)</div><div class="value num" id="statFillAsia">0</div></div>
+      <div class="stat"><div class="label">الرصيد المتبقي (أسيا)</div><div class="value num" id="statBalanceAsia">0</div></div>
+      <div class="stat"><div class="label">عدد العمليات</div><div class="value num" id="statCounts">0</div></div>
+      <div class="stat"><div class="label">التكلفة الكلية</div><div class="value num rose" id="statCost">$0.00</div></div>
+      <div class="stat"><div class="label">قيمة البيع الكلية</div><div class="value num" id="statRevenue">$0.00</div></div>
+      <div class="stat wide"><div class="label">الربح الصافي</div><div class="value num gold" id="statProfit" style="font-size:24px;">$0.00</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>السجل الكامل</h2>
+    <div id="logList"><div class="empty">لا توجد عمليات مسجلة</div></div>
+    <p class="sync-note">يتزامن تلقائي مع حسابك — يفتح بنفس البيانات من أي جهاز</p>
+  </div>
+
+  <button class="reset-link" id="resetBtn">تصفير كل البيانات</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+import {
+  getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot,
+  query, orderBy, setDoc, getDoc, writeBatch, getDocs
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+// ⚠️ استبدل هذا الكائن بإعدادات مشروعك من Firebase Console
+// (Project settings → General → Your apps → SDK setup and configuration)
+const firebaseConfig = {
+  apiKey: "AIzaSyDn3v2T6cE4La-ec2KOeiVYjehL4opSigo",
+  authDomain: "profit-log-5e53b.firebaseapp.com",
+  projectId: "profit-log-5e53b",
+  storageBucket: "profit-log-5e53b.firebasestorage.app",
+  messagingSenderId: "170601376777",
+  appId: "1:170601376777:web:c966ebf0829eae6afa9cd8"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+const LIWA_ASIA = 52387;
+const FARIS_ASIA = 15707;
+
+let currentUid = null;
+let entries = [];
+let rates = { buy: 5.9, sell: 6.1 };
+let unsubEntries = null;
+
+// ---------- parsing (identical logic to the chat-based tool) ----------
+const ARABIC_DIGITS = '٠١٢٣٤٥٦٧٨٩';
+function toWesternDigits(s){ return s.replace(/[٠-٩]/g, d => String(ARABIC_DIGITS.indexOf(d))); }
+function stripControlChars(s){ return s.replace(/[\u200E\u200F\u202A-\u202E]/g, ''); }
+function stripMeta(s){ const m = s.match(/^\[.*?\]\s*[^:]*:\s*(.*)$/); return m ? m[1] : s; }
+function normalize(s){ return toWesternDigits(stripControlChars(s)).replace(/[أإآ]/g,'ا'); }
+function levenshtein(a, b){
+  const dp = Array.from({length:a.length+1}, (_,i)=>[i, ...Array(b.length).fill(0)]);
+  for(let j=0;j<=b.length;j++) dp[0][j]=j;
+  for(let i=1;i<=a.length;i++){
+    for(let j=1;j<=b.length;j++){
+      dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]);
+    }
+  }
+  return dp[a.length][b.length];
+}
+function wordMatches(token, target, maxDist){
+  token = token.replace(/[^\u0600-\u06FF]/g,'');
+  if(!token) return false;
+  return levenshtein(token, target) <= maxDist;
+}
+function findKeyword(bodyWords, target, maxDist){ return bodyWords.some(w => wordMatches(w, target, maxDist)); }
+function fmtNum(n){ return Math.round(n).toLocaleString('en-US'); }
+function fmtMoney(n){ return '$' + n.toFixed(2); }
+
+function parseMessages(text){
+  const lines = text.split('\n').map(l=>l.trim()).filter(Boolean);
+  const added = [];
+  for(const raw of lines){
+    const bodyRaw = stripMeta(stripControlChars(raw)).trim();
+    if(!bodyRaw) continue;
+    const line = normalize(bodyRaw);
+    const words = line.split(/\s+/).filter(Boolean);
+
+    const isFill = findKeyword(words, 'عبيت', 1) || findKeyword(words, 'عبي', 0);
+    if(isFill){
+      const m = line.match(/عب[ىي]?\S*\s*([\d.,]+)/);
+      if(m){
+        let numStr = m[1];
+        let asia;
+        if(numStr.includes('.') || numStr.includes(',')){
+          asia = parseInt(numStr.replace(/[.,]/g,''), 10);
+        } else {
+          asia = parseInt(numStr, 10);
+          if(asia < 1000) asia *= 1000;
+        }
+        if(!isNaN(asia)) added.push({type:'fill', category:null, asia, raw:bodyRaw});
+      }
+      continue;
+    }
+
+    const hasLiwa = findKeyword(words, 'لواء', 1);
+    const hasFaris = findKeyword(words, 'فارس', 1);
+    const numMatch = line.match(/\d+/);
+    const qty = numMatch ? parseInt(numMatch[0], 10) : 1;
+
+    if(hasLiwa){ added.push({type:'sale', category:'لواء', asia:LIWA_ASIA*qty, raw:bodyRaw}); continue; }
+    if(hasFaris){ added.push({type:'sale', category:'فارس', asia:FARIS_ASIA*qty, raw:bodyRaw}); continue; }
+
+    const hasTakeVerb = findKeyword(words, 'اخذت', 1) || findKeyword(words, 'اخدت', 1);
+    if(hasTakeVerb && numMatch){
+      const customAsia = parseInt(numMatch[0], 10);
+      if(!isNaN(customAsia) && customAsia > 0){
+        added.push({type:'sale', category:'مخصص', asia:customAsia, raw:bodyRaw});
+      }
+    }
+  }
+  return added;
+}
+
+// ---------- auth ----------
+document.getElementById('googleSignIn').addEventListener('click', () => {
+  signInWithPopup(auth, provider).catch(err => alert('تعذر تسجيل الدخول: ' + err.message));
+});
+document.getElementById('signOutBtn').addEventListener('click', () => signOut(auth));
+
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    currentUid = user.uid;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('userName').textContent = user.displayName || user.email || '';
+    document.getElementById('userPhoto').src = user.photoURL || '';
+    await loadRates();
+    subscribeEntries();
+  } else {
+    currentUid = null;
+    if(unsubEntries) unsubEntries();
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+});
+
+// ---------- firestore data ----------
+async function loadRates(){
+  try{
+    const ref = doc(db, 'users', currentUid, 'settings', 'rates');
+    const snap = await getDoc(ref);
+    if(snap.exists()){
+      rates = snap.data();
+    } else {
+      await setDoc(ref, rates);
+    }
+  }catch(err){ console.error(err); }
+  document.getElementById('buyRate').value = rates.buy;
+  document.getElementById('sellRate').value = rates.sell;
+}
+
+async function saveRates(){
+  rates.buy = parseFloat(document.getElementById('buyRate').value) || 0;
+  rates.sell = parseFloat(document.getElementById('sellRate').value) || 0;
+  try{
+    await setDoc(doc(db, 'users', currentUid, 'settings', 'rates'), rates);
+  }catch(err){ console.error(err); }
+  render();
+}
+
+function subscribeEntries(){
+  const q = query(collection(db, 'users', currentUid, 'entries'), orderBy('ts', 'desc'));
+  unsubEntries = onSnapshot(q, (snapshot) => {
+    entries = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    render();
+  });
+}
+
+async function addEntry(entry){
+  try{
+    await addDoc(collection(db, 'users', currentUid, 'entries'), { ...entry, ts: Date.now() });
+  }catch(err){ console.error(err); alert('تعذرت الإضافة، تأكد من الاتصال بالإنترنت.'); }
+}
+
+async function deleteEntry(id){
+  try{
+    await deleteDoc(doc(db, 'users', currentUid, 'entries', id));
+  }catch(err){ console.error(err); }
+}
+
+async function resetAll(){
+  const snap = await getDocs(collection(db, 'users', currentUid, 'entries'));
+  const batch = writeBatch(db);
+  snap.docs.forEach(d => batch.delete(d.ref));
+  await batch.commit();
+}
+
+// ---------- UI ----------
+function render(){
+  const sold = entries.filter(e=>e.type==='sale');
+  const fills = entries.filter(e=>e.type==='fill');
+  const totalSoldAsia = sold.reduce((s,e)=>s+e.asia,0);
+  const totalFillAsia = fills.reduce((s,e)=>s+e.asia,0);
+  const balanceAsia = totalSoldAsia - totalFillAsia;
+  const liwaCount = sold.filter(e=>e.category==='لواء').length;
+  const farisCount = sold.filter(e=>e.category==='فارس').length;
+  const customCount = sold.filter(e=>e.category==='مخصص').length;
+
+  const buy = rates.buy || 0;
+  const sell = rates.sell || 0;
+  const cost = (totalSoldAsia/10000)*buy;
+  const revenue = (totalSoldAsia/10000)*sell;
+  const profit = revenue - cost;
+
+  document.getElementById('heroProfit').textContent = fmtMoney(profit);
+  document.getElementById('heroSub').textContent = entries.length
+    ? `${liwaCount} لواء و ${farisCount} فارس${customCount ? ' و '+customCount+' مخصص' : ''} · رصيد ${fmtNum(balanceAsia)} أسيا`
+    : 'الصق رسائلك أو أضف عملية يدوياً';
+
+  document.getElementById('statSoldAsia').textContent = fmtNum(totalSoldAsia);
+  document.getElementById('statFillAsia').textContent = fmtNum(totalFillAsia);
+  document.getElementById('statBalanceAsia').textContent = fmtNum(balanceAsia);
+  document.getElementById('statCounts').textContent = `${liwaCount} لواء / ${farisCount} فارس` + (customCount ? ` / ${customCount} مخصص` : '');
+  document.getElementById('statCost').textContent = fmtMoney(cost);
+  document.getElementById('statRevenue').textContent = fmtMoney(revenue);
+  document.getElementById('statProfit').textContent = fmtMoney(profit);
+
+  const logList = document.getElementById('logList');
+  if(entries.length === 0){
+    logList.innerHTML = '<div class="empty">لا توجد عمليات مسجلة</div>';
+    return;
+  }
+  logList.innerHTML = entries.map(e=>{
+    const label = e.type==='sale' ? e.category : 'تعبئة';
+    const sign = e.type==='sale' ? '−' : '+';
+    const cls = e.type==='sale' ? 'sale' : 'fill';
+    return `<div class="log-item">
+      <div>
+        <div>${label}</div>
+        <div class="log-meta">${(e.raw||'').slice(0,40)}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="log-amt num ${cls}">${sign}${fmtNum(e.asia)}</div>
+        <button class="del-btn" data-id="${e.id}">حذف</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  logList.querySelectorAll('.del-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> deleteEntry(btn.getAttribute('data-id')));
+  });
+}
+
+document.getElementById('parseBtn').addEventListener('click', async ()=>{
+  const box = document.getElementById('pasteBox');
+  const added = parseMessages(box.value);
+  if(added.length === 0) return;
+  box.value = '';
+  for(const entry of added) await addEntry(entry);
+});
+
+document.getElementById('addLiwa').addEventListener('click', ()=>{
+  addEntry({type:'sale', category:'لواء', asia:LIWA_ASIA, raw:'إضافة يدوية'});
+});
+document.getElementById('addFaris').addEventListener('click', ()=>{
+  addEntry({type:'sale', category:'فارس', asia:FARIS_ASIA, raw:'إضافة يدوية'});
+});
+document.getElementById('addFill').addEventListener('click', ()=>{
+  const val = prompt('كم عبيت؟ (مثلا 20 يعني 20,000)');
+  if(val === null) return;
+  let asia = parseInt(val.replace(/[.,]/g,''), 10);
+  if(isNaN(asia)) return;
+  if(asia < 1000 && !val.includes('.') && !val.includes(',')) asia *= 1000;
+  addEntry({type:'fill', category:null, asia, raw:'تعبئة يدوية: '+val});
+});
+
+document.getElementById('buyRate').addEventListener('change', saveRates);
+document.getElementById('sellRate').addEventListener('change', saveRates);
+
+document.getElementById('resetBtn').addEventListener('click', async ()=>{
+  if(confirm('متأكد تريد تصفير كل البيانات؟')){
+    await resetAll();
+  }
+});
+</script>
+</body>
+</html>
