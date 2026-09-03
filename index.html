@@ -33,32 +33,34 @@ body{
 .rose{color:var(--rose);}
 .green{color:var(--green);}
 
-/* login gate */
 #loginScreen{
   min-height:80vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  gap:18px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:18px;
 }
 #loginScreen h1{font-size:22px;margin:0;color:var(--gold);}
 #loginScreen p{color:var(--text-dim);font-size:14px;max-width:320px;margin:0;}
 .google-btn{
   display:flex;align-items:center;gap:10px;
-  background:#fff;color:#1F1F1F;
-  border:none;border-radius:8px;
-  padding:12px 20px;font-family:'Tajawal',sans-serif;
-  font-weight:700;font-size:15px;cursor:pointer;
+  background:#fff;color:#1F1F1F;border:none;border-radius:8px;
+  padding:12px 20px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:15px;cursor:pointer;
 }
 .google-btn img{width:18px;height:18px;}
 
 #app{display:none;}
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
-.user-chip{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dim);}
-.user-chip img{width:24px;height:24px;border-radius:50%;}
-.signout-btn{background:none;border:none;color:var(--text-dim);font-size:12px;text-decoration:underline;padding:4px;}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px;}
+.user-chip{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dim);flex:1;min-width:0;}
+.user-chip img{width:24px;height:24px;border-radius:50%;flex-shrink:0;}
+.user-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.signout-btn{background:none;border:none;color:var(--text-dim);font-size:12px;text-decoration:underline;padding:4px;flex-shrink:0;}
+
+.kebab-wrap{position:relative;flex-shrink:0;}
+.kebab-btn{background:var(--panel-alt);border:1px solid var(--line);color:var(--text);font-size:18px;cursor:pointer;padding:5px 12px;line-height:1;border-radius:7px;}
+.kebab-menu{display:none;position:absolute;top:115%;left:0;background:var(--panel-alt);border:1px solid var(--line);border-radius:8px;min-width:190px;z-index:60;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.4);}
+.kebab-menu.open{display:block;}
+.kebab-menu button{display:block;width:100%;text-align:right;background:none;border:none;color:var(--text);padding:12px 14px;font-family:'Tajawal',sans-serif;font-size:13px;cursor:pointer;border-bottom:1px solid var(--line);}
+.kebab-menu button:last-child{border-bottom:none;}
+.kebab-menu button:active{background:var(--panel);}
 
 header{margin-bottom:14px;}
 .eyebrow{color:var(--text-dim);font-size:13px;margin:0 0 6px;}
@@ -69,21 +71,10 @@ header{margin-bottom:14px;}
 .month-picker{
   display:flex;align-items:center;justify-content:space-between;
   background:var(--panel-alt);border:1px solid var(--line);border-radius:8px;
-  padding:9px 12px;margin-bottom:18px;font-size:13px;
+  padding:9px 12px;margin-bottom:14px;font-size:13px;
 }
-.month-picker input{
-  background:none;border:none;color:var(--text);font-family:'Tajawal',sans-serif;
-  font-size:14px;font-weight:700;direction:ltr;
-}
+.month-picker input{background:none;border:none;color:var(--text);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;direction:ltr;}
 .month-picker .lbl{color:var(--text-dim);}
-
-.week-strip{
-  display:flex;justify-content:space-between;align-items:center;
-  background:var(--panel-alt);border-radius:8px;padding:10px 14px;margin-bottom:14px;
-  font-size:13px;
-}
-.week-strip .lbl{color:var(--text-dim);}
-.week-strip .val{font-weight:700;}
 
 .panel{background:var(--panel);border-top:2px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px;}
 .panel h2{font-size:14px;font-weight:700;margin:0 0 12px;color:var(--text-dim);}
@@ -95,6 +86,8 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
 .btn{border:none;border-radius:7px;padding:11px 14px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:14px;cursor:pointer;}
 .btn-primary{background:var(--gold);color:#1A1305;width:100%;margin-top:10px;}
 .btn-primary:active{background:var(--gold-dim);}
+.btn-toggle{background:var(--panel-alt);color:var(--text);border:1px solid var(--line);width:100%;margin-bottom:14px;}
+.btn-toggle:active{border-color:var(--gold);}
 .quickrow{display:flex;gap:8px;}
 .btn-quick{flex:1;background:var(--panel-alt);color:var(--text);border:1px solid var(--line);}
 .btn-quick:active{border-color:var(--gold);}
@@ -124,15 +117,18 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
 .settle-item{display:flex;justify-content:space-between;align-items:center;padding:10px 2px;border-bottom:1px solid var(--line);font-size:14px;}
 .settle-item:last-child{border-bottom:none;}
 .settle-item.settled{opacity:.45;}
-.settle-btn{
-  background:var(--panel-alt);border:1px solid var(--line);color:var(--text);
-  border-radius:7px;padding:7px 12px;font-family:'Tajawal',sans-serif;
-  font-size:12px;font-weight:700;cursor:pointer;
-}
+.settle-btn{background:var(--panel-alt);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 12px;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
 .settle-btn.is-settled{border-color:var(--green);color:var(--green);}
 .settle-total{font-size:13px;color:var(--text-dim);margin-bottom:10px;}
+.settle-all-btn{background:var(--green);color:#0F1C18;border:none;border-radius:7px;padding:11px 14px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:14px;cursor:pointer;width:100%;margin-bottom:14px;}
 
 .chart-wrap{width:100%;}
+
+#detailsContainer{display:none;}
+
+.overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:1000;overflow-y:auto;padding:20px 16px 60px;}
+.overlay.active{display:block;}
+.overlay-close{background:var(--panel-alt);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 16px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:13px;margin-bottom:16px;cursor:pointer;}
 </style>
 </head>
 <body>
@@ -152,7 +148,16 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
       <img id="userPhoto" src="" alt="">
       <span id="userName"></span>
     </div>
-    <button class="signout-btn" id="signOutBtn">تسجيل خروج</button>
+    <div class="kebab-wrap">
+      <button class="kebab-btn" id="kebabBtn">⋮</button>
+      <div class="kebab-menu" id="kebabMenu">
+        <button data-target="panel-monthly">📅 الربح الشهري</button>
+        <button data-target="panel-weekly">📆 الربح الأسبوعي</button>
+        <button data-target="panel-golden">🏆 أفضل 5 أيام</button>
+        <button data-target="panel-settle">💰 تعبئات يوسف</button>
+      </div>
+    </div>
+    <button class="signout-btn" id="signOutBtn">خروج</button>
   </div>
 
   <header>
@@ -165,11 +170,6 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
   <div class="month-picker">
     <span class="lbl">عرض شهر:</span>
     <input type="month" id="monthSelect">
-  </div>
-
-  <div class="week-strip">
-    <span class="lbl">هذا الأسبوع</span>
-    <span class="val num gold" id="weekProfit">$0.00</span>
   </div>
 
   <div class="panel">
@@ -195,52 +195,75 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
     </div>
   </div>
 
-  <div class="panel">
-    <h2>الربح اليومي (الشهر المحدد)</h2>
-    <div class="chart-wrap" id="chartWrap"><div class="empty">لا توجد بيانات كافية للرسم</div></div>
-  </div>
+  <button class="btn btn-toggle" id="toggleDetailsBtn">إظهار كل التفاصيل</button>
 
-  <div class="panel">
-    <h2>الملخص — الشهر المحدد</h2>
-    <div class="stat-grid">
-      <div class="stat"><div class="label">إجمالي المبيعات (أسيا)</div><div class="value num" id="statSoldAsia">0</div></div>
-      <div class="stat"><div class="label">إجمالي التعبئة (أسيا)</div><div class="value num" id="statFillAsia">0</div></div>
-      <div class="stat"><div class="label">الرصيد المتبقي (أسيا)</div><div class="value num" id="statBalanceAsia">0</div></div>
-      <div class="stat"><div class="label">عدد العمليات</div><div class="value num" id="statCounts">0</div></div>
-      <div class="stat"><div class="label">التكلفة الكلية</div><div class="value num rose" id="statCost">$0.00</div></div>
-      <div class="stat"><div class="label">قيمة البيع الكلية</div><div class="value num" id="statRevenue">$0.00</div></div>
-      <div class="stat wide"><div class="label">الربح الصافي</div><div class="value num gold" id="statProfit" style="font-size:24px;">$0.00</div></div>
+  <div id="detailsContainer">
+
+    <div id="panel-monthly">
+      <div class="panel">
+        <h2>الربح اليومي (الشهر المحدد)</h2>
+        <div class="chart-wrap" id="chartWrap"><div class="empty">لا توجد بيانات كافية للرسم</div></div>
+      </div>
+
+      <div class="panel">
+        <h2>الملخص — الشهر المحدد</h2>
+        <div class="stat-grid">
+          <div class="stat"><div class="label">إجمالي المبيعات (أسيا)</div><div class="value num" id="statSoldAsia">0</div></div>
+          <div class="stat"><div class="label">إجمالي التعبئة (أسيا)</div><div class="value num" id="statFillAsia">0</div></div>
+          <div class="stat"><div class="label">الرصيد المتبقي (أسيا)</div><div class="value num" id="statBalanceAsia">0</div></div>
+          <div class="stat"><div class="label">عدد العمليات</div><div class="value num" id="statCounts">0</div></div>
+          <div class="stat"><div class="label">التكلفة الكلية</div><div class="value num rose" id="statCost">$0.00</div></div>
+          <div class="stat"><div class="label">قيمة البيع الكلية</div><div class="value num" id="statRevenue">$0.00</div></div>
+          <div class="stat wide"><div class="label">الربح الصافي</div><div class="value num gold" id="statProfit" style="font-size:24px;">$0.00</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>الأرباح حسب اليوم</h2>
+        <div id="dailyList"><div class="empty">لا توجد عمليات مسجلة</div></div>
+      </div>
+
+      <div class="panel">
+        <h2>سجل تغييرات الأسعار</h2>
+        <div id="rateHistoryList"><div class="empty">ما تغيرت الأسعار بعد</div></div>
+      </div>
+
+      <div class="panel">
+        <h2>السجل الكامل — الشهر المحدد</h2>
+        <div id="logList"><div class="empty">لا توجد عمليات مسجلة</div></div>
+        <p class="sync-note">يتزامن تلقائي مع حسابك — يفتح بنفس البيانات من أي جهاز</p>
+      </div>
     </div>
-  </div>
 
-  <div class="panel">
-    <h2>الأرباح حسب اليوم (الشهر المحدد)</h2>
-    <div id="dailyList"><div class="empty">لا توجد عمليات مسجلة</div></div>
-  </div>
+    <div class="panel" id="panel-weekly">
+      <h2>الربح الأسبوعي (هذا الأسبوع)</h2>
+      <div class="stat-grid">
+        <div class="stat"><div class="label">المبيعات (أسيا)</div><div class="value num" id="weekSold">0</div></div>
+        <div class="stat"><div class="label">التعبئة (أسيا)</div><div class="value num" id="weekFill">0</div></div>
+        <div class="stat wide"><div class="label">الربح</div><div class="value num gold" id="weekProfit" style="font-size:22px;">$0.00</div></div>
+      </div>
+    </div>
 
-  <div class="panel">
-    <h2>🏆 أفضل 5 أيام (كل الأوقات)</h2>
-    <div id="goldenList"><div class="empty">لا توجد بيانات كافية</div></div>
-  </div>
+    <div class="panel" id="panel-golden">
+      <h2>🏆 أفضل 5 أيام (كل الأوقات)</h2>
+      <div id="goldenList"><div class="empty">لا توجد بيانات كافية</div></div>
+    </div>
 
-  <div class="panel">
-    <h2>سجل تغييرات الأسعار</h2>
-    <div id="rateHistoryList"><div class="empty">ما تغيرت الأسعار بعد</div></div>
-  </div>
+    <div class="panel" id="panel-settle">
+      <h2>💰 تعبئات يوسف — تصفية</h2>
+      <button class="settle-all-btn" id="settleAllBtn">تصفية الكل بضغطة زر</button>
+      <p class="settle-total" id="settleTotal">كل شي مصفى</p>
+      <div id="settleList"><div class="empty">لا توجد تعبئات مسجلة</div></div>
+    </div>
 
-  <div class="panel">
-    <h2>💰 تعبئات يوسف — تصفية</h2>
-    <p class="settle-total" id="settleTotal">كل شي مصفى</p>
-    <div id="settleList"><div class="empty">لا توجد تعبئات مسجلة</div></div>
-  </div>
-
-  <div class="panel">
-    <h2>السجل الكامل — الشهر المحدد</h2>
-    <div id="logList"><div class="empty">لا توجد عمليات مسجلة</div></div>
-    <p class="sync-note">يتزامن تلقائي مع حسابك — يفتح بنفس البيانات من أي جهاز</p>
   </div>
 
   <button class="reset-link" id="resetBtn">تصفير كل البيانات (كل الأشهر)</button>
+</div>
+
+<div class="overlay" id="overlay">
+  <button class="overlay-close" id="overlayClose">✕ إغلاق</button>
+  <div id="overlayBody"></div>
 </div>
 
 <script type="module">
@@ -277,7 +300,7 @@ let rateHistory = [];
 let rates = { buy: 5.9, sell: 6.1 };
 let unsubEntries = null;
 let unsubRateHistory = null;
-let selectedMonth = null; // "YYYY-MM"
+let selectedMonth = null;
 
 // ---------- date helpers ----------
 function pad2(n){ return String(n).padStart(2,'0'); }
@@ -305,7 +328,7 @@ function currentWeekRange(){
   return { startIso: isoFromDate(start), endIso: isoFromDate(end) };
 }
 
-// ---------- parsing (same tested logic, now with isoDate) ----------
+// ---------- parsing ----------
 const ARABIC_DIGITS = '٠١٢٣٤٥٦٧٨٩';
 function toWesternDigits(s){ return s.replace(/[٠-٩]/g, d => String(ARABIC_DIGITS.indexOf(d))); }
 function stripControlChars(s){ return s.replace(/[\u200E\u200F\u202A-\u202E]/g, ''); }
@@ -418,6 +441,49 @@ document.getElementById('monthSelect').addEventListener('change', (e)=>{
   render();
 });
 
+// ---------- kebab menu + overlay ----------
+document.getElementById('kebabBtn').addEventListener('click', ()=>{
+  document.getElementById('kebabMenu').classList.toggle('open');
+});
+document.addEventListener('click', (e)=>{
+  const wrap = document.querySelector('.kebab-wrap');
+  if(wrap && !wrap.contains(e.target)){
+    document.getElementById('kebabMenu').classList.remove('open');
+  }
+});
+
+let overlayOrigin = null;
+function openOverlay(targetId){
+  const el = document.getElementById(targetId);
+  if(!el) return;
+  overlayOrigin = { parent: el.parentNode, next: el.nextSibling };
+  document.getElementById('overlayBody').appendChild(el);
+  document.getElementById('overlay').classList.add('active');
+  document.getElementById('kebabMenu').classList.remove('open');
+  window.scrollTo(0,0);
+}
+function closeOverlay(){
+  const body = document.getElementById('overlayBody');
+  const el = body.firstElementChild;
+  if(el && overlayOrigin){
+    if(overlayOrigin.next) overlayOrigin.parent.insertBefore(el, overlayOrigin.next);
+    else overlayOrigin.parent.appendChild(el);
+  }
+  document.getElementById('overlay').classList.remove('active');
+  overlayOrigin = null;
+}
+document.querySelectorAll('.kebab-menu button').forEach(btn=>{
+  btn.addEventListener('click', ()=> openOverlay(btn.getAttribute('data-target')));
+});
+document.getElementById('overlayClose').addEventListener('click', closeOverlay);
+
+let detailsShown = false;
+document.getElementById('toggleDetailsBtn').addEventListener('click', ()=>{
+  detailsShown = !detailsShown;
+  document.getElementById('detailsContainer').style.display = detailsShown ? 'block' : 'none';
+  document.getElementById('toggleDetailsBtn').textContent = detailsShown ? 'إخفاء كل التفاصيل' : 'إظهار كل التفاصيل';
+});
+
 // ---------- firestore data ----------
 async function loadRates(){
   try{
@@ -485,6 +551,16 @@ async function toggleSettled(id, current){
   }catch(err){ console.error(err); }
 }
 
+async function settleAll(){
+  const unsettled = entries.filter(e=>e.type==='fill' && !e.settled);
+  if(unsettled.length === 0) return;
+  try{
+    const batch = writeBatch(db);
+    unsettled.forEach(e => batch.update(doc(db, 'users', currentUid, 'entries', e.id), { settled: true }));
+    await batch.commit();
+  }catch(err){ console.error(err); }
+}
+
 async function resetAll(){
   const snap = await getDocs(collection(db, 'users', currentUid, 'entries'));
   const batch = writeBatch(db);
@@ -496,7 +572,7 @@ async function resetAll(){
   await batch2.commit();
 }
 
-// ---------- stats helpers ----------
+// ---------- stats ----------
 function computeTotals(list, buy, sell){
   const sold = list.filter(e=>e.type==='sale');
   const fills = list.filter(e=>e.type==='fill');
@@ -513,6 +589,24 @@ function computeTotals(list, buy, sell){
   };
 }
 
+function buildChart(profits){
+  const w = 320, h = 140, pad = 24;
+  const max = Math.max(...profits, 0);
+  const min = Math.min(...profits, 0);
+  const range = (max - min) || 1;
+  const stepX = (w - 2*pad) / Math.max(profits.length - 1, 1);
+  const points = profits.map((p,i)=>{
+    const x = pad + i*stepX;
+    const y = h - pad - ((p - min)/range)*(h - 2*pad);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  const zeroY = h - pad - ((0 - min)/range)*(h - 2*pad);
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:140px;">
+    <line x1="${pad}" y1="${zeroY.toFixed(1)}" x2="${w-pad}" y2="${zeroY.toFixed(1)}" stroke="#28382F" stroke-width="1"/>
+    <polyline points="${points}" fill="none" stroke="#D4AF37" stroke-width="2"/>
+  </svg>`;
+}
+
 // ---------- render ----------
 function render(){
   if(!entries) return;
@@ -527,7 +621,6 @@ function render(){
     ? `${t.liwaCount} لواء و ${t.farisCount} فارس${t.customCount ? ' و '+t.customCount+' مخصص' : ''} · رصيد ${fmtNum(t.balance)} أسيا`
     : 'لا توجد عمليات بهذا الشهر';
 
-  // daily grouping for selected month
   const dailyMap = {};
   monthEntries.forEach(e=>{
     const iso = e.isoDate || '';
@@ -538,19 +631,18 @@ function render(){
   const dailyKeysAsc = Object.keys(dailyMap).filter(Boolean).sort();
   const dailyKeysDesc = [...dailyKeysAsc].reverse();
 
-  // average per active day
   const activeDays = dailyKeysAsc.length;
   document.getElementById('heroAvg').textContent = activeDays
     ? `متوسط الربح اليومي: ${fmtMoney(t.profit/activeDays)} (${activeDays} يوم عمل)`
     : '';
 
-  // week strip (always real current week, independent of month selector)
   const { startIso, endIso } = currentWeekRange();
   const weekEntries = entries.filter(e => e.isoDate >= startIso && e.isoDate <= endIso);
   const wt = computeTotals(weekEntries, buy, sell);
   document.getElementById('weekProfit').textContent = fmtMoney(wt.profit);
+  document.getElementById('weekSold').textContent = fmtNum(wt.soldAsia);
+  document.getElementById('weekFill').textContent = fmtNum(wt.fillAsia);
 
-  // chart
   const chartWrap = document.getElementById('chartWrap');
   if(dailyKeysAsc.length < 2){
     chartWrap.innerHTML = '<div class="empty">لا توجد بيانات كافية للرسم (يحتاج يومين على الأقل)</div>';
@@ -564,7 +656,6 @@ function render(){
     chartWrap.innerHTML = buildChart(dayProfits);
   }
 
-  // stat grid
   document.getElementById('statSoldAsia').textContent = fmtNum(t.soldAsia);
   document.getElementById('statFillAsia').textContent = fmtNum(t.fillAsia);
   document.getElementById('statBalanceAsia').textContent = fmtNum(t.balance);
@@ -573,7 +664,6 @@ function render(){
   document.getElementById('statRevenue').textContent = fmtMoney(t.revenue);
   document.getElementById('statProfit').textContent = fmtMoney(t.profit);
 
-  // daily list (with up/down movement arrows), newest first
   const dailyList = document.getElementById('dailyList');
   if(dailyKeysDesc.length === 0){
     dailyList.innerHTML = '<div class="empty">لا توجد عمليات مسجلة</div>';
@@ -595,19 +685,18 @@ function render(){
     }).join('');
   }
 
-  // golden days (all-time)
   const allDailyMap = {};
   entries.forEach(e=>{
     const iso = e.isoDate || '';
     if(!iso) return;
-    if(!allDailyMap[iso]) allDailyMap[iso] = { sold:0, fill:0, display: e.date || '' };
+    if(!allDailyMap[iso]) allDailyMap[iso] = { sold:0, display: e.date || '' };
     if(e.type==='sale') allDailyMap[iso].sold += e.asia;
   });
   const goldenDays = Object.keys(allDailyMap).map(iso=>{
     const day = allDailyMap[iso];
     const dCost = (day.sold/10000)*buy;
     const dRev = (day.sold/10000)*sell;
-    return { iso, display: day.display, profit: dRev - dCost };
+    return { display: day.display, profit: dRev - dCost };
   }).sort((a,b)=>b.profit-a.profit).slice(0,5);
   const goldenList = document.getElementById('goldenList');
   if(goldenDays.length === 0){
@@ -619,7 +708,6 @@ function render(){
     </div>`).join('');
   }
 
-  // rate history
   const rhList = document.getElementById('rateHistoryList');
   if(rateHistory.length === 0){
     rhList.innerHTML = '<div class="empty">ما تغيرت الأسعار بعد</div>';
@@ -630,12 +718,13 @@ function render(){
     </div>`).join('');
   }
 
-  // settle list (all fills, all-time)
   const fills = entries.filter(e=>e.type==='fill');
   const unsettledTotal = fills.filter(e=>!e.settled).reduce((s,e)=>s+e.asia,0);
   document.getElementById('settleTotal').textContent = unsettledTotal > 0
     ? `غير مصفى: ${fmtNum(unsettledTotal)} أسيا`
     : 'كل شي مصفى ✅';
+  document.getElementById('settleAllBtn').style.display = unsettledTotal > 0 ? 'block' : 'none';
+
   const settleList = document.getElementById('settleList');
   if(fills.length === 0){
     settleList.innerHTML = '<div class="empty">لا توجد تعبئات مسجلة</div>';
@@ -656,49 +745,29 @@ function render(){
     });
   }
 
-  // full log (selected month)
   const logList = document.getElementById('logList');
   if(monthEntries.length === 0){
     logList.innerHTML = '<div class="empty">لا توجد عمليات مسجلة بهذا الشهر</div>';
-    return;
+  } else {
+    logList.innerHTML = monthEntries.map(e=>{
+      const label = e.type==='sale' ? e.category : 'تعبئة';
+      const sign = e.type==='sale' ? '−' : '+';
+      const cls = e.type==='sale' ? 'sale' : 'fill';
+      return `<div class="log-item">
+        <div>
+          <div>${label} <span class="log-meta">${e.date || ''}</span></div>
+          <div class="log-meta">${(e.raw||'').slice(0,40)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="log-amt num ${cls}">${sign}${fmtNum(e.asia)}</div>
+          <button class="del-btn" data-id="${e.id}">حذف</button>
+        </div>
+      </div>`;
+    }).join('');
+    logList.querySelectorAll('.del-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=> deleteEntry(btn.getAttribute('data-id')));
+    });
   }
-  logList.innerHTML = monthEntries.map(e=>{
-    const label = e.type==='sale' ? e.category : 'تعبئة';
-    const sign = e.type==='sale' ? '−' : '+';
-    const cls = e.type==='sale' ? 'sale' : 'fill';
-    return `<div class="log-item">
-      <div>
-        <div>${label} <span class="log-meta">${e.date || ''}</span></div>
-        <div class="log-meta">${(e.raw||'').slice(0,40)}</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <div class="log-amt num ${cls}">${sign}${fmtNum(e.asia)}</div>
-        <button class="del-btn" data-id="${e.id}">حذف</button>
-      </div>
-    </div>`;
-  }).join('');
-
-  logList.querySelectorAll('.del-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=> deleteEntry(btn.getAttribute('data-id')));
-  });
-}
-
-function buildChart(profits){
-  const w = 320, h = 140, pad = 24;
-  const max = Math.max(...profits, 0);
-  const min = Math.min(...profits, 0);
-  const range = (max - min) || 1;
-  const stepX = (w - 2*pad) / Math.max(profits.length - 1, 1);
-  const points = profits.map((p,i)=>{
-    const x = pad + i*stepX;
-    const y = h - pad - ((p - min)/range)*(h - 2*pad);
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(' ');
-  const zeroY = h - pad - ((0 - min)/range)*(h - 2*pad);
-  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:140px;">
-    <line x1="${pad}" y1="${zeroY.toFixed(1)}" x2="${w-pad}" y2="${zeroY.toFixed(1)}" stroke="#28382F" stroke-width="1"/>
-    <polyline points="${points}" fill="none" stroke="#D4AF37" stroke-width="2"/>
-  </svg>`;
 }
 
 document.getElementById('parseBtn').addEventListener('click', async ()=>{
@@ -729,6 +798,8 @@ document.getElementById('addFill').addEventListener('click', ()=>{
 
 document.getElementById('buyRate').addEventListener('change', saveRates);
 document.getElementById('sellRate').addEventListener('change', saveRates);
+
+document.getElementById('settleAllBtn').addEventListener('click', settleAll);
 
 document.getElementById('resetBtn').addEventListener('click', async ()=>{
   if(confirm('متأكد تريد تصفير كل البيانات من كل الأشهر؟ هذا الإجراء لا يمكن التراجع عنه.')){
