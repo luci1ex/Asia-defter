@@ -3,660 +3,916 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دفتر المتجر</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>دفتر أسيا</title>
 <style>
-  :root{
-    --bg:#0A0805;
-    --surface:#161109;
-    --surface2:#1F1A0F;
-    --border:#3A2F17;
-    --accent:#F5B60D;
-    --accent-soft:#F5B60D22;
-    --accent-ink:#161109;
-    --gold:#FFD447;
-    --danger:#FF5C7A;
-    --danger-soft:#FF5C7A1E;
-    --text:#F3EEE4;
-    --muted:#A79A82;
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:
-      radial-gradient(circle at 18% -6%, #2B2107 0%, transparent 45%),
-      radial-gradient(circle at 100% 10%, #241C09 0%, transparent 40%),
-      #0A0805;
-    color:var(--text);
-    font-family:'Inter',sans-serif;
-    min-height:100vh;
-    padding-bottom:60px;
-    position:relative;
-  }
-  #starsCanvas{
-    position:fixed;
-    inset:0;
-    width:100%;
-    height:100%;
-    z-index:0;
-    pointer-events:none;
-  }
-  #authScreen, #app{position:relative;z-index:1;}
-  h1,h2,h3,.brand{font-family:'Sora',sans-serif;}
-  .wrap{max-width:760px;margin:0 auto;padding:0 18px;}
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap');
 
-  .logoImg{
-    width:46px;height:46px;border-radius:12px;object-fit:cover;
-    box-shadow:0 0 0 1px var(--border), 0 4px 18px #F5B60D2E;
-  }
-  .brandRow{display:flex;align-items:center;gap:12px;}
+:root{
+  --bg:#0F1C18;
+  --panel:#16241F;
+  --panel-alt:#1D2E27;
+  --text:#EDE6D6;
+  --text-dim:#8FA69C;
+  --gold:#D4AF37;
+  --gold-dim:#9C8433;
+  --rose:#C1544A;
+  --green:#5FA97E;
+  --line:#28382F;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Tajawal',sans-serif;
+  padding:20px 16px 60px;
+  min-height:100vh;
+}
+.num{font-family:'JetBrains Mono',monospace;direction:ltr;unicode-bidi:plaintext;}
+.gold{color:var(--gold);}
+.rose{color:var(--rose);}
+.green{color:var(--green);}
 
-  /* ---------- Auth screen ---------- */
-  #authScreen{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:24px;
-  }
-  .authCard{
-    width:100%;
-    max-width:380px;
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:18px;
-    padding:32px 26px;
-  }
-  .authCard .brand{
-    font-size:22px;
-    font-weight:700;
-    margin:0;
-    background:linear-gradient(90deg,#FFFFFF,#F5B60D);
-    -webkit-background-clip:text;
-    background-clip:text;
-    color:transparent;
-  }
-  .authCard .brandRow{margin-bottom:4px;justify-content:center;}
-  .authCard .subBrand{
-    text-align:center;color:var(--muted);font-size:11px;
-    letter-spacing:.14em;margin:0 0 22px;font-family:'Sora',sans-serif;
-  }
-  .authCard p.sub{color:var(--muted);margin:0 0 24px;font-size:14px;}
-  .field{margin-bottom:14px;}
-  .field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;}
-  .field input, .field select{
-    width:100%;
-    background:var(--surface2);
-    border:1px solid var(--border);
-    color:var(--text);
-    border-radius:10px;
-    padding:11px 13px;
-    font-size:15px;
-    font-family:'Inter',sans-serif;
-  }
-  .field input:focus, .field select:focus{outline:2px solid var(--accent);border-color:var(--accent);}
-  .btn{
-    width:100%;
-    background:linear-gradient(180deg,#FFCB33,#F5B60D);
-    color:var(--accent-ink);
-    border:none;
-    border-radius:10px;
-    padding:12px;
-    font-size:15px;
-    font-weight:700;
-    cursor:pointer;
-    font-family:'Inter',sans-serif;
-    transition:transform .08s ease, filter .15s ease;
-  }
-  .btn:hover{filter:brightness(1.08);}
-  .btn:active{transform:scale(0.98);}
-  .btn.ghost{
-    background:transparent;
-    border:1px solid var(--border);
-    color:var(--text);
-  }
-  .btn.danger{background:var(--danger);}
-  .switchRow{text-align:center;margin-top:16px;font-size:13.5px;color:var(--muted);}
-  .switchRow a{color:var(--accent);cursor:pointer;text-decoration:none;font-weight:600;}
-  #authError{color:var(--danger);font-size:13px;margin-top:10px;min-height:16px;}
+#loginScreen{
+  min-height:80vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;gap:18px;
+}
+#loginScreen h1{font-size:22px;margin:0;color:var(--gold);}
+#loginScreen p{color:var(--text-dim);font-size:14px;max-width:320px;margin:0;}
+.google-btn{
+  display:flex;align-items:center;gap:10px;
+  background:#fff;color:#1F1F1F;border:none;border-radius:8px;
+  padding:12px 20px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:15px;cursor:pointer;
+}
+.google-btn img{width:18px;height:18px;}
 
-  /* ---------- App shell ---------- */
-  #app{display:none;}
-  header.topbar{
-    padding:22px 0 14px;
-    border-bottom:1px solid var(--border);
-    margin-bottom:18px;
-  }
-  header.topbar .row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
-  header.topbar .brand{font-size:19px;font-weight:700;}
-  .userChip{
-    display:flex;align-items:center;gap:8px;
-    font-size:12.5px;color:var(--muted);
-  }
-  .roleTag{
-    background:var(--accent-soft);
-    color:var(--gold);
-    padding:3px 9px;
-    border-radius:20px;
-    font-size:11px;
-    font-weight:600;
-  }
-  .signOutBtn{
-    background:transparent;border:1px solid var(--border);color:var(--muted);
-    border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;
-  }
+#app{display:none;}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px;}
+.user-chip{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dim);flex:1;min-width:0;}
+.user-chip img{width:24px;height:24px;border-radius:50%;flex-shrink:0;}
+.user-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.signout-btn{background:none;border:none;color:var(--text-dim);font-size:12px;text-decoration:underline;padding:4px;flex-shrink:0;}
 
-  nav.tabs{
-    display:flex;
-    gap:6px;
-    overflow-x:auto;
-    padding-bottom:2px;
-    margin-bottom:22px;
-  }
-  nav.tabs button{
-    flex:0 0 auto;
-    background:var(--surface);
-    border:1px solid var(--border);
-    color:var(--muted);
-    padding:9px 16px;
-    border-radius:30px;
-    font-size:13.5px;
-    font-weight:600;
-    cursor:pointer;
-    font-family:'Inter',sans-serif;
-    white-space:nowrap;
-  }
-  nav.tabs button.active{
-    background:linear-gradient(180deg,#FFCB33,#F5B60D);
-    border-color:var(--accent);
-    color:var(--accent-ink);
-  }
+.kebab-wrap{position:relative;flex-shrink:0;}
+.kebab-btn{background:var(--panel-alt);border:1px solid var(--line);color:var(--text);font-size:18px;cursor:pointer;padding:5px 12px;line-height:1;border-radius:7px;}
+.kebab-menu{display:none;position:absolute;top:115%;left:0;background:var(--panel-alt);border:1px solid var(--line);border-radius:8px;min-width:190px;z-index:60;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.4);}
+.kebab-menu.open{display:block;}
+.kebab-menu button{display:block;width:100%;text-align:right;background:none;border:none;color:var(--text);padding:12px 14px;font-family:'Tajawal',sans-serif;font-size:13px;cursor:pointer;border-bottom:1px solid var(--line);}
+.kebab-menu button:last-child{border-bottom:none;}
+.kebab-menu button:active{background:var(--panel);}
 
-  .card{
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:20px;
-    margin-bottom:18px;
-  }
-  .card h3{margin:0 0 16px;font-size:15px;font-weight:600;}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .profitPreview{
-    display:flex;align-items:center;justify-content:space-between;
-    background:var(--surface2);
-    border-radius:10px;
-    padding:12px 14px;
-    margin:14px 0;
-    font-size:14px;
-  }
-  .profitPreview b{font-size:18px;}
-  .profitPreview b.pos{color:var(--gold);}
-  .profitPreview b.neg{color:var(--danger);}
+header{margin-bottom:14px;}
+.eyebrow{color:var(--text-dim);font-size:13px;margin:0 0 6px;}
+.hero-num{font-size:44px;font-weight:900;color:var(--gold);line-height:1.1;margin:0;}
+.hero-sub{color:var(--text-dim);font-size:13px;margin-top:6px;}
+.hero-avg{color:var(--text-dim);font-size:12px;margin-top:4px;}
 
-  .totalsBar{
-    display:flex;justify-content:space-between;gap:10px;
-    background:var(--surface2);
-    border-radius:12px;
-    padding:14px 16px;
-    margin-bottom:14px;
-    font-size:13px;
-    color:var(--muted);
-  }
-  .totalsBar b{color:var(--text);font-size:16px;display:block;font-family:'Sora',sans-serif;}
+.month-picker{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--panel-alt);border:1px solid var(--line);border-radius:8px;
+  padding:9px 12px;margin-bottom:14px;font-size:13px;
+}
+.month-picker input{background:none;border:none;color:var(--text);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;direction:ltr;}
+.month-picker .lbl{color:var(--text-dim);}
 
-  .orderRow{
-    background:var(--surface2);
-    border:1px solid var(--border);
-    border-radius:12px;
-    padding:13px 15px;
-    margin-bottom:10px;
-    font-size:13.5px;
-  }
-  .orderRow .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;}
-  .orderRow .nums{color:var(--muted);}
-  .orderRow .profitVal{font-weight:700;font-family:'Sora',sans-serif;}
-  .orderRow .profitVal.pos{color:var(--gold);}
-  .orderRow .profitVal.neg{color:var(--danger);}
-  .orderRow .meta{margin-top:6px;color:var(--muted);font-size:12px;}
-  .orderRow .note{margin-top:6px;font-size:13px;color:var(--text);}
-  .orderRow .actions{margin-top:8px;}
-  .delBtn{
-    background:none;border:none;color:var(--danger);font-size:12px;cursor:pointer;
-    padding:0;font-family:'Inter',sans-serif;
-  }
-  .emptyState{color:var(--muted);text-align:center;padding:30px 10px;font-size:13.5px;}
+.panel{background:var(--panel);border-top:2px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px;}
+.panel h2{font-size:14px;font-weight:700;margin:0 0 12px;color:var(--text-dim);}
+.rates{display:flex;gap:10px;}
+.rate-field{flex:1;}
+.rate-field label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:5px;}
+.rate-field input{width:100%;background:var(--panel-alt);border:1px solid var(--line);color:var(--text);font-family:'JetBrains Mono',monospace;direction:ltr;text-align:center;font-size:16px;padding:9px 6px;border-radius:7px;}
+textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:10px;font-family:'Tajawal',sans-serif;font-size:14px;resize:vertical;}
+.btn{border:none;border-radius:7px;padding:11px 14px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:14px;cursor:pointer;}
+.btn-primary{background:var(--gold);color:#1A1305;width:100%;margin-top:10px;}
+.btn-primary:active{background:var(--gold-dim);}
+.btn-toggle{background:var(--panel-alt);color:var(--text);border:1px solid var(--line);width:100%;margin-bottom:14px;}
+.btn-toggle:active{border-color:var(--gold);}
+.quickrow{display:flex;gap:8px;}
+.btn-quick{flex:1;background:var(--panel-alt);color:var(--text);border:1px solid var(--line);}
+.btn-quick:active{border-color:var(--gold);}
 
-  .grandCard{
-    background:linear-gradient(135deg,#241C09,#161109);
-    border:1px solid var(--accent);
-  }
-  .grandRow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:14px;}
-  .grandRow:last-child{border-bottom:none;}
-  .grandRow b{font-family:'Sora',sans-serif;color:var(--gold);}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.stat{background:var(--panel-alt);border-radius:8px;padding:12px;}
+.stat .label{font-size:12px;color:var(--text-dim);margin-bottom:4px;}
+.stat .value{font-size:19px;font-weight:700;}
+.stat .value.gold{color:var(--gold);}
+.stat .value.rose{color:var(--rose);}
+.stat.wide{grid-column:1/3;}
+
+.log-item{display:flex;justify-content:space-between;align-items:center;padding:10px 2px;border-bottom:1px solid var(--line);font-size:14px;}
+.log-item:last-child{border-bottom:none;}
+.log-meta{color:var(--text-dim);font-size:12px;margin-top:2px;}
+.log-amt{font-weight:700;}
+.log-amt.sale{color:var(--rose);}
+.log-amt.fill{color:var(--green);}
+.del-btn{background:none;border:none;color:var(--text-dim);font-size:12px;padding:6px;cursor:pointer;}
+.empty{color:var(--text-dim);font-size:13px;text-align:center;padding:14px 0;}
+.reset-link{display:block;text-align:center;color:var(--text-dim);font-size:12px;margin-top:18px;background:none;border:none;width:100%;padding:8px;}
+.sync-note{font-size:11px;color:var(--text-dim);text-align:center;margin-top:6px;}
+
+.arrow-up{color:var(--rose);}
+.arrow-down{color:var(--green);}
+
+.settle-item{display:flex;justify-content:space-between;align-items:center;padding:10px 2px;border-bottom:1px solid var(--line);font-size:14px;}
+.settle-item:last-child{border-bottom:none;}
+.settle-btn{background:var(--panel-alt);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 12px;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.settle-total{font-size:13px;color:var(--text-dim);margin-bottom:10px;}
+.settle-all-btn{background:var(--green);color:#0F1C18;border:none;border-radius:7px;padding:11px 14px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:14px;cursor:pointer;width:100%;margin-bottom:14px;}
+
+.chart-wrap{width:100%;}
+
+.exp-row{display:flex;gap:8px;margin-bottom:10px;}
+.exp-row input{background:var(--panel-alt);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 10px;font-family:'Tajawal',sans-serif;font-size:14px;}
+.exp-row input[type=text]{flex:1;min-width:0;}
+.exp-row input[type=number]{width:110px;font-family:'JetBrains Mono',monospace;direction:ltr;text-align:center;}
+.exp-total{font-size:13px;color:var(--text-dim);margin-bottom:10px;}
+
+#detailsContainer{display:none;}
+
+.overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:1000;overflow-y:auto;padding:20px 16px 60px;}
+.overlay.active{display:block;}
+.overlay-close{background:var(--panel-alt);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 16px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:13px;margin-bottom:16px;cursor:pointer;}
 </style>
 </head>
 <body>
-<canvas id="starsCanvas"></canvas>
 
-<!-- ================= AUTH SCREEN ================= -->
-<div id="authScreen">
-  <div class="authCard">
-    <div class="brandRow">
-      <img class="logoImg" id="logoImgAuth" alt="Lucifer Exchange">
-      <p class="brand">LUCIFER</p>
-    </div>
-    <p class="subBrand">E X C H A N G E — دفتر المتجر</p>
-    <p class="sub" id="authSub">سجل دخولك لمتابعة الطلبات والأرباح</p>
-
-    <div class="field">
-      <label>الإيميل</label>
-      <input type="email" id="emailInput" placeholder="you@example.com">
-    </div>
-    <div class="field">
-      <label>الباسورد</label>
-      <input type="password" id="passInput" placeholder="••••••••">
-    </div>
-    <button class="btn" id="authSubmitBtn">دخول</button>
-    <div id="authError"></div>
-    <div class="switchRow" id="switchRow">
-      ماعندك حساب؟ <a id="toSignup">سوي حساب جديد</a>
-    </div>
-  </div>
+<div id="loginScreen">
+  <h1>دفتر أسيا</h1>
+  <p>سجل دخول بحساب Google حتى تنحفظ بياناتك دائم وتقدر تفتحها من أي جهاز.</p>
+  <button class="google-btn" id="googleSignIn">
+    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+    تسجيل الدخول بحساب Google
+  </button>
 </div>
 
-<!-- ================= APP ================= -->
 <div id="app">
-  <div class="wrap">
-    <header class="topbar">
-      <div class="row">
-        <div class="brandRow">
-          <img class="logoImg" id="logoImgTop" alt="Lucifer Exchange">
-          <div>
-            <div class="brand" style="font-size:16px;line-height:1.2;">LUCIFER</div>
-            <div style="font-size:10px;letter-spacing:.12em;color:var(--muted);">EXCHANGE</div>
-          </div>
-        </div>
-        <div class="userChip">
-          <span id="userEmailLabel"></span>
-          <span class="roleTag" id="roleLabel"></span>
-          <button class="signOutBtn" id="signOutBtn">خروج</button>
+  <div class="topbar">
+    <div class="user-chip">
+      <img id="userPhoto" src="" alt="">
+      <span id="userName"></span>
+    </div>
+    <div class="kebab-wrap">
+      <button class="kebab-btn" id="kebabBtn">⋮</button>
+      <div class="kebab-menu" id="kebabMenu">
+        <button data-target="panel-monthly">📅 الربح الشهري</button>
+        <button data-target="panel-weekly">📆 الربح الأسبوعي</button>
+        <button data-target="panel-golden">🏆 أفضل 5 أيام</button>
+        <button data-target="panel-settle">💰 تعبئات يوسف</button>
+        <button data-target="panel-exp-ali-personal">🧾 مصاريف علي الشخصية</button>
+        <button data-target="panel-exp-ali-work">💼 مصاريف علي للشغل</button>
+        <button data-target="panel-exp-hussein-personal">🧾 مصاريف حسين الشخصية</button>
+      </div>
+    </div>
+    <button class="signout-btn" id="signOutBtn">خروج</button>
+  </div>
+
+  <header>
+    <p class="eyebrow">صافي الربح — الشهر المحدد</p>
+    <p class="hero-num num" id="heroProfit">$0.00</p>
+    <p class="hero-sub" id="heroSub">لا توجد عمليات بعد</p>
+    <p class="hero-avg num" id="heroAvg"></p>
+  </header>
+
+  <div class="month-picker">
+    <span class="lbl">عرض شهر:</span>
+    <input type="month" id="monthSelect">
+  </div>
+
+  <div class="panel">
+    <h2>الأسعار (لكل 10,000 أسيا)</h2>
+    <div class="rates">
+      <div class="rate-field"><label>سعر الشراء $</label><input type="number" step="0.01" id="buyRate" value="5.9"></div>
+      <div class="rate-field"><label>سعر البيع $</label><input type="number" step="0.01" id="sellRate" value="6.1"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>لصق رسائل واتساب</h2>
+    <textarea id="pasteBox" placeholder="الصق نص الرسائل كما هي، حتى لو فيها [تاريخ ووقت] واسم المرسل، وحتى لو فيها غلط إملائي"></textarea>
+    <button class="btn btn-primary" id="parseBtn">تحليل وإضافة</button>
+  </div>
+
+  <div class="panel">
+    <h2>إضافة يدوية</h2>
+    <div class="quickrow">
+      <button class="btn btn-quick" id="addLiwa">+ لواء</button>
+      <button class="btn btn-quick" id="addFaris">+ فارس</button>
+      <button class="btn btn-quick" id="addFill">+ تعبئة</button>
+    </div>
+  </div>
+
+  <button class="btn btn-toggle" id="toggleDetailsBtn">إظهار كل التفاصيل</button>
+
+  <div id="detailsContainer">
+
+    <div id="panel-monthly">
+      <div class="panel">
+        <h2>الربح اليومي (الشهر المحدد)</h2>
+        <div class="chart-wrap" id="chartWrap"><div class="empty">لا توجد بيانات كافية للرسم</div></div>
+      </div>
+
+      <div class="panel">
+        <h2>الملخص — الشهر المحدد</h2>
+        <div class="stat-grid">
+          <div class="stat"><div class="label">إجمالي المبيعات (أسيا)</div><div class="value num" id="statSoldAsia">0</div></div>
+          <div class="stat"><div class="label">إجمالي التعبئة (أسيا)</div><div class="value num" id="statFillAsia">0</div></div>
+          <div class="stat"><div class="label">الرصيد المتبقي (أسيا)</div><div class="value num" id="statBalanceAsia">0</div></div>
+          <div class="stat"><div class="label">عدد العمليات</div><div class="value num" id="statCounts">0</div></div>
+          <div class="stat"><div class="label">التكلفة الكلية</div><div class="value num rose" id="statCost">$0.00</div></div>
+          <div class="stat"><div class="label">قيمة البيع الكلية</div><div class="value num" id="statRevenue">$0.00</div></div>
+          <div class="stat wide"><div class="label">الربح الصافي</div><div class="value num gold" id="statProfit" style="font-size:24px;">$0.00</div></div>
         </div>
       </div>
-    </header>
 
-    <nav class="tabs" id="tabsNav"></nav>
+      <div class="panel">
+        <h2>الأرباح حسب اليوم</h2>
+        <div id="dailyList"><div class="empty">لا توجد عمليات مسجلة</div></div>
+      </div>
 
-    <div id="sectionContent"></div>
+      <div class="panel">
+        <h2>سجل تغييرات الأسعار</h2>
+        <div id="rateHistoryList"><div class="empty">ما تغيرت الأسعار بعد</div></div>
+      </div>
+
+      <div class="panel">
+        <h2>السجل الكامل — الشهر المحدد</h2>
+        <div id="logList"><div class="empty">لا توجد عمليات مسجلة</div></div>
+        <p class="sync-note">يتزامن تلقائي مع حسابك — يفتح بنفس البيانات من أي جهاز</p>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-weekly">
+      <h2>الربح الأسبوعي (هذا الأسبوع)</h2>
+      <div class="stat-grid">
+        <div class="stat"><div class="label">المبيعات (أسيا)</div><div class="value num" id="weekSold">0</div></div>
+        <div class="stat"><div class="label">التعبئة (أسيا)</div><div class="value num" id="weekFill">0</div></div>
+        <div class="stat wide"><div class="label">الربح</div><div class="value num gold" id="weekProfit" style="font-size:22px;">$0.00</div></div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-golden">
+      <h2>🏆 أفضل 5 أيام (كل الأوقات)</h2>
+      <div id="goldenList"><div class="empty">لا توجد بيانات كافية</div></div>
+    </div>
+
+    <div class="panel" id="panel-settle">
+      <h2>💰 تعبئات يوسف — تصفية</h2>
+      <button class="settle-all-btn" id="settleAllBtn">تصفية الكل بضغطة زر</button>
+      <p class="settle-total" id="settleTotal">لا توجد تعبئات غير مصفاة</p>
+      <div id="settleList"><div class="empty">لا توجد تعبئات مسجلة</div></div>
+    </div>
+
+    <div class="panel" id="panel-exp-ali-personal">
+      <h2>🧾 مصاريف علي الشخصية</h2>
+      <p class="exp-total" id="expTotal-ali-personal">الإجمالي: $0.00</p>
+      <div class="exp-row">
+        <input type="number" step="0.01" id="expAmount-ali-personal" placeholder="$">
+        <input type="text" id="expNote-ali-personal" placeholder="وصف (اختياري)">
+      </div>
+      <button class="btn btn-primary" id="expAddBtn-ali-personal">إضافة مصروف</button>
+      <div id="expList-ali-personal"><div class="empty">لا توجد مصاريف مسجلة</div></div>
+    </div>
+
+    <div class="panel" id="panel-exp-ali-work">
+      <h2>💼 مصاريف علي للشغل</h2>
+      <p class="exp-total" id="expTotal-ali-work">الإجمالي: $0.00</p>
+      <div class="exp-row">
+        <input type="number" step="0.01" id="expAmount-ali-work" placeholder="$">
+        <input type="text" id="expNote-ali-work" placeholder="وصف (اختياري)">
+      </div>
+      <button class="btn btn-primary" id="expAddBtn-ali-work">إضافة مصروف</button>
+      <div id="expList-ali-work"><div class="empty">لا توجد مصاريف مسجلة</div></div>
+    </div>
+
+    <div class="panel" id="panel-exp-hussein-personal">
+      <h2>🧾 مصاريف حسين الشخصية</h2>
+      <p class="exp-total" id="expTotal-hussein-personal">الإجمالي: $0.00</p>
+      <div class="exp-row">
+        <input type="number" step="0.01" id="expAmount-hussein-personal" placeholder="$">
+        <input type="text" id="expNote-hussein-personal" placeholder="وصف (اختياري)">
+      </div>
+      <button class="btn btn-primary" id="expAddBtn-hussein-personal">إضافة مصروف</button>
+      <div id="expList-hussein-personal"><div class="empty">لا توجد مصاريف مسجلة</div></div>
+    </div>
+
   </div>
+
+  <button class="reset-link" id="resetBtn">تصفير كل البيانات (كل الأشهر)</button>
+</div>
+
+<div class="overlay" id="overlay">
+  <button class="overlay-close" id="overlayClose">✕ إغلاق</button>
+  <div id="overlayBody"></div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
-  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  onAuthStateChanged, signOut
-} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
   getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot,
-  query, where, orderBy, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+  query, orderBy, setDoc, getDoc, writeBatch, getDocs, updateDoc
+} from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
-/* ======================================================================
-   1) بدل هاي البيانات بمعلومات مشروع Firebase الجديد الخاص بيك
-   ====================================================================== */
+// ⚠️ إعدادات مشروعك على Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyBqgxlOomstd75tKgeK4l6IOuxMPQtJB_E",
-  authDomain: "lucifer-server-log.firebaseapp.com",
-  projectId: "lucifer-server-log",
-  storageBucket: "lucifer-server-log.firebasestorage.app",
-  messagingSenderId: "575252872989",
-  appId: "1:575252872989:web:10a2b1a30e124670cbebf4"
+  apiKey: "AIzaSyDn3v2T6cE4La-ec2KOeiVYjehL4opSigo",
+  authDomain: "profit-log-5e53b.firebaseapp.com",
+  projectId: "profit-log-5e53b",
+  storageBucket: "profit-log-5e53b.firebasestorage.app",
+  messagingSenderId: "170601376777",
+  appId: "1:170601376777:web:c966ebf0829eae6afa9cd8"
 };
-
-/* 2) حط إيميلك هنا حتى تنعطى صلاحية "مدير" (تشوف كل الطلبات) */
-const MANAGER_EMAILS = ["e3li@outlook.sa"];
-
-/* ====================================================================== */
-
-/* -------- شعار المتجر (لوسيفر إكسچينج) -------- */
-const LOGO_DATA_URI = "data:image/jpeg;base64,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";
-
-/* -------- خلفية النجوم المتساقطة المتلألئة -------- */
-function startStarfield() {
-  const canvas = document.getElementById("starsCanvas");
-  const ctx = canvas.getContext("2d");
-  let w, h, stars;
-
-  function resize() {
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-  }
-  function makeStars() {
-    const count = Math.min(110, Math.floor((w * h) / 9000));
-    stars = Array.from({ length: count }, () => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      r: Math.random() * 1.4 + 0.4,
-      speed: Math.random() * 0.35 + 0.08,
-      phase: Math.random() * Math.PI * 2,
-      twinkleSpeed: Math.random() * 0.02 + 0.01
-    }));
-  }
-  resize();
-  makeStars();
-  window.addEventListener("resize", () => { resize(); makeStars(); });
-
-  function tick() {
-    ctx.clearRect(0, 0, w, h);
-    for (const s of stars) {
-      s.y += s.speed;
-      s.phase += s.twinkleSpeed;
-      if (s.y > h) { s.y = -2; s.x = Math.random() * w; }
-      const twinkle = (Math.sin(s.phase) + 1) / 2; // 0..1
-      const alpha = 0.15 + twinkle * 0.65;
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(245,182,13,${alpha.toFixed(2)})`;
-      ctx.shadowColor = "rgba(255,212,71,0.8)";
-      ctx.shadowBlur = twinkle * 4;
-      ctx.fill();
-    }
-    requestAnimationFrame(tick);
-  }
-  tick();
-}
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
 
-document.getElementById("logoImgAuth").src = LOGO_DATA_URI;
-document.getElementById("logoImgTop").src = LOGO_DATA_URI;
-startStarfield();
+const LIWA_ASIA = 52387;
+const FARIS_ASIA = 15707;
+const EXPENSE_LISTS = ['ali-personal', 'ali-work', 'hussein-personal'];
 
-const SECTIONS = [
-  { id: "nitro",    label: "نيتروات" },
-  { id: "effects",  label: "افكتات" },
-  { id: "posts",    label: "بوستات" },
-  { id: "accounts", label: "حسابات", extraField: true }
-];
+let currentUid = null;
+let entries = [];
+let rateHistory = [];
+let expenses = [];
+let rates = { buy: 5.9, sell: 6.1 };
+let unsubEntries = null;
+let unsubRateHistory = null;
+let unsubExpenses = null;
+let selectedMonth = null;
 
-let currentUser = null;
-let isManager = false;
-let activeSection = "nitro";
-let unsubscribeOrders = null;
-let currentOrders = [];
-
-/* ---------------- Auth screen logic ---------------- */
-let mode = "login"; // or "signup"
-const authSub = document.getElementById("authSub");
-const authSubmitBtn = document.getElementById("authSubmitBtn");
-const switchRow = document.getElementById("switchRow");
-const authError = document.getElementById("authError");
-
-document.getElementById("toSignup").addEventListener("click", () => {
-  mode = mode === "login" ? "signup" : "login";
-  if (mode === "signup") {
-    authSub.textContent = "سوي حساب جديد للانضمام للتيم";
-    authSubmitBtn.textContent = "إنشاء الحساب";
-    switchRow.innerHTML = 'عندك حساب؟ <a id="toSignup2">دخول</a>';
-    document.getElementById("toSignup2").addEventListener("click", () => location.reload());
+// ---------- date helpers ----------
+function pad2(n){ return String(n).padStart(2,'0'); }
+function isoFromDate(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+function todayDateInfo(){
+  const d = new Date();
+  return { display: `${d.getDate()}/${d.getMonth()+1}`, iso: isoFromDate(d) };
+}
+function inferDateObj(day, month){
+  const now = new Date();
+  let candidate = new Date(now.getFullYear(), month-1, day);
+  const twoDaysAhead = new Date(now.getTime() + 2*86400000);
+  if(candidate > twoDaysAhead){
+    candidate = new Date(now.getFullYear()-1, month-1, day);
   }
-});
+  return candidate;
+}
+function monthKeyOf(iso){ return iso ? iso.slice(0,7) : ''; }
+function isoOfEntry(e){
+  if(e.isoDate) return e.isoDate;
+  if(e.ts) return isoFromDate(new Date(e.ts));
+  return '';
+}
+function displayOfEntry(e){
+  if(e.date) return e.date;
+  if(e.ts){ const d = new Date(e.ts); return `${d.getDate()}/${d.getMonth()+1}`; }
+  return '';
+}
+function currentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`; }
+function currentWeekRange(){
+  const now = new Date();
+  const day = now.getDay();
+  const start = new Date(now); start.setDate(now.getDate()-day); start.setHours(0,0,0,0);
+  const end = new Date(start); end.setDate(start.getDate()+6); end.setHours(23,59,59,999);
+  return { startIso: isoFromDate(start), endIso: isoFromDate(end) };
+}
 
-authSubmitBtn.addEventListener("click", async () => {
-  const email = document.getElementById("emailInput").value.trim();
-  const pass = document.getElementById("passInput").value;
-  authError.textContent = "";
-  if (!email || !pass) { authError.textContent = "لازم تعبي الإيميل والباسورد"; return; }
-  try {
-    if (mode === "login") {
-      await signInWithEmailAndPassword(auth, email, pass);
-    } else {
-      await createUserWithEmailAndPassword(auth, email, pass);
+// ---------- parsing ----------
+const ARABIC_DIGITS = '٠١٢٣٤٥٦٧٨٩';
+function toWesternDigits(s){ return s.replace(/[٠-٩]/g, d => String(ARABIC_DIGITS.indexOf(d))); }
+function stripControlChars(s){ return s.replace(/[\u200E\u200F\u202A-\u202E]/g, ''); }
+function stripMeta(s){ const m = s.match(/^\[.*?\]\s*[^:]*:\s*(.*)$/); return m ? m[1] : s; }
+function normalize(s){ return toWesternDigits(stripControlChars(s)).replace(/[أإآ]/g,'ا'); }
+function extractDateInfo(rawLine){
+  const cleaned = toWesternDigits(stripControlChars(rawLine));
+  const m = cleaned.match(/^\[(\d{1,2})\/(\d{1,2})/);
+  if(m){
+    const day = parseInt(m[1],10), month = parseInt(m[2],10);
+    const dateObj = inferDateObj(day, month);
+    return { display: `${day}/${month}`, iso: isoFromDate(dateObj) };
+  }
+  return todayDateInfo();
+}
+function levenshtein(a, b){
+  const dp = Array.from({length:a.length+1}, (_,i)=>[i, ...Array(b.length).fill(0)]);
+  for(let j=0;j<=b.length;j++) dp[0][j]=j;
+  for(let i=1;i<=a.length;i++){
+    for(let j=1;j<=b.length;j++){
+      dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j-1], dp[i-1][j], dp[i][j-1]);
     }
-  } catch (e) {
-    authError.textContent = translateAuthError(e.code);
   }
-});
-
-function translateAuthError(code) {
-  const map = {
-    "auth/invalid-email": "الإيميل غير صحيح",
-    "auth/user-not-found": "ماكو حساب بهذا الإيميل",
-    "auth/wrong-password": "الباسورد غلط",
-    "auth/invalid-credential": "بيانات الدخول غلط",
-    "auth/email-already-in-use": "هذا الإيميل مسجل من قبل",
-    "auth/weak-password": "الباسورد لازم 6 أحرف أو أكثر"
-  };
-  return map[code] || "صار خطأ، حاول مرة ثانية";
+  return dp[a.length][b.length];
 }
-
-document.getElementById("signOutBtn").addEventListener("click", () => signOut(auth));
-
-/* ---------------- Auth state ---------------- */
-onAuthStateChanged(auth, (user) => {
-  currentUser = user;
-  if (user) {
-    isManager = MANAGER_EMAILS.includes(user.email);
-    document.getElementById("authScreen").style.display = "none";
-    document.getElementById("app").style.display = "block";
-    document.getElementById("userEmailLabel").textContent = user.email;
-    document.getElementById("roleLabel").textContent = isManager ? "مدير" : "عضو";
-    buildTabs();
-    renderSection();
-  } else {
-    document.getElementById("authScreen").style.display = "flex";
-    document.getElementById("app").style.display = "none";
-    if (unsubscribeOrders) unsubscribeOrders();
-  }
-});
-
-/* ---------------- Tabs ---------------- */
-function buildTabs() {
-  const nav = document.getElementById("tabsNav");
-  nav.innerHTML = "";
-  const tabList = [...SECTIONS];
-  if (isManager) tabList.push({ id: "totals", label: "الإجمالي" });
-  tabList.forEach(s => {
-    const btn = document.createElement("button");
-    btn.textContent = s.label;
-    btn.className = s.id === activeSection ? "active" : "";
-    btn.addEventListener("click", () => {
-      activeSection = s.id;
-      buildTabs();
-      renderSection();
-    });
-    nav.appendChild(btn);
-  });
+function wordMatches(token, target, maxDist){
+  token = token.replace(/[^\u0600-\u06FF]/g,'');
+  if(!token) return false;
+  return levenshtein(token, target) <= maxDist;
 }
+function findKeyword(bodyWords, target, maxDist){ return bodyWords.some(w => wordMatches(w, target, maxDist)); }
+function fmtNum(n){ return Math.round(n).toLocaleString('en-US'); }
+function fmtMoney(n){ return '$' + n.toFixed(2); }
 
-/* ---------------- Section rendering ---------------- */
-function renderSection() {
-  const content = document.getElementById("sectionContent");
-  if (unsubscribeOrders) unsubscribeOrders();
+function parseMessages(text){
+  const lines = text.split('\n').map(l=>l.trim()).filter(Boolean);
+  const added = [];
+  for(const raw of lines){
+    const bodyRaw = stripMeta(stripControlChars(raw)).trim();
+    if(!bodyRaw) continue;
+    const dateInfo = extractDateInfo(raw);
+    const line = normalize(bodyRaw);
+    const words = line.split(/\s+/).filter(Boolean);
 
-  if (activeSection === "totals") {
-    content.innerHTML = `<div class="card grandCard"><h3>الربح الإجمالي لكل الأقسام</h3><div id="grandBox">جاري التحميل...</div></div>`;
-    renderGrandTotals();
-    return;
-  }
-
-  const section = SECTIONS.find(s => s.id === activeSection);
-  content.innerHTML = `
-    <div class="card">
-      <h3>إضافة طلب — ${section.label}</h3>
-      ${section.extraField ? `
-      <div class="field">
-        <label>نوع الحساب</label>
-        <input type="text" id="accountTypeInput" placeholder="مثلاً: حساب PUBG، حساب Netflix...">
-      </div>` : ""}
-      <div class="grid2">
-        <div class="field">
-          <label>سعر التكلفة</label>
-          <input type="number" id="costInput" placeholder="0">
-        </div>
-        <div class="field">
-          <label>سعر البيع</label>
-          <input type="number" id="sellInput" placeholder="0">
-        </div>
-      </div>
-      <div class="field">
-        <label>ملاحظة (اختياري)</label>
-        <input type="text" id="noteInput" placeholder="اسم الزبون، تفاصيل إضافية...">
-      </div>
-      <div class="profitPreview">
-        <span>الربح</span>
-        <b id="profitPreviewVal" class="pos">0</b>
-      </div>
-      <button class="btn" id="addOrderBtn">إضافة الطلب</button>
-    </div>
-
-    <div class="totalsBar" id="sectionTotals">
-      <div><b id="totalCount">0</b>عدد الطلبات</div>
-      <div><b id="totalProfit">0</b>مجموع الربح</div>
-    </div>
-
-    <div id="orderList"></div>
-  `;
-
-  const costEl = document.getElementById("costInput");
-  const sellEl = document.getElementById("sellInput");
-  const previewEl = document.getElementById("profitPreviewVal");
-
-  function updatePreview() {
-    const c = parseFloat(costEl.value) || 0;
-    const s = parseFloat(sellEl.value) || 0;
-    const p = s - c;
-    previewEl.textContent = p.toLocaleString();
-    previewEl.className = p >= 0 ? "pos" : "neg";
-  }
-  costEl.addEventListener("input", updatePreview);
-  sellEl.addEventListener("input", updatePreview);
-
-  document.getElementById("addOrderBtn").addEventListener("click", async () => {
-    const cost = parseFloat(costEl.value);
-    const sell = parseFloat(sellEl.value);
-    if (isNaN(cost) || isNaN(sell)) { alert("لازم تكتب سعر التكلفة وسعر البيع"); return; }
-    const note = document.getElementById("noteInput").value.trim();
-    const accountType = section.extraField ? document.getElementById("accountTypeInput").value.trim() : null;
-
-    await addDoc(collection(db, "orders"), {
-      section: section.id,
-      cost, sell,
-      profit: sell - cost,
-      note: note || null,
-      accountType: accountType || null,
-      createdBy: currentUser.email,
-      createdByUid: currentUser.uid,
-      createdAt: serverTimestamp()
-    });
-
-    costEl.value = ""; sellEl.value = ""; document.getElementById("noteInput").value = "";
-    if (section.extraField) document.getElementById("accountTypeInput").value = "";
-    updatePreview();
-  });
-
-  subscribeToOrders(section);
-}
-
-function subscribeToOrders(section) {
-  let q;
-  if (isManager) {
-    q = query(collection(db, "orders"), where("section", "==", section.id), orderBy("createdAt", "desc"));
-  } else {
-    q = query(collection(db, "orders"),
-      where("section", "==", section.id),
-      where("createdByUid", "==", currentUser.uid),
-      orderBy("createdAt", "desc"));
-  }
-  unsubscribeOrders = onSnapshot(q, (snap) => {
-    currentOrders = [];
-    snap.forEach(d => currentOrders.push({ id: d.id, ...d.data() }));
-    renderOrderList(section);
-  });
-}
-
-function renderOrderList(section) {
-  const listEl = document.getElementById("orderList");
-  const totalCountEl = document.getElementById("totalCount");
-  const totalProfitEl = document.getElementById("totalProfit");
-  if (!listEl) return;
-
-  const totalProfit = currentOrders.reduce((sum, o) => sum + (o.profit || 0), 0);
-  totalCountEl.textContent = currentOrders.length;
-  totalProfitEl.textContent = totalProfit.toLocaleString();
-
-  if (currentOrders.length === 0) {
-    listEl.innerHTML = `<div class="emptyState">ماكو طلبات مسجلة بعد بهذا القسم</div>`;
-    return;
-  }
-
-  listEl.innerHTML = currentOrders.map(o => {
-    const isPos = o.profit >= 0;
-    const date = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString("ar-IQ") : "";
-    const canDelete = isManager || o.createdByUid === currentUser.uid;
-    return `
-      <div class="orderRow">
-        <div class="top">
-          <div class="nums">تكلفة ${o.cost.toLocaleString()} · بيع ${o.sell.toLocaleString()}</div>
-          <div class="profitVal ${isPos ? "pos" : "neg"}">${o.profit.toLocaleString()}</div>
-        </div>
-        ${o.accountType ? `<div class="note">نوع الحساب: ${escapeHtml(o.accountType)}</div>` : ""}
-        ${o.note ? `<div class="note">${escapeHtml(o.note)}</div>` : ""}
-        <div class="meta">${date}${isManager ? " · " + o.createdBy : ""}</div>
-        ${canDelete ? `<div class="actions"><button class="delBtn" data-id="${o.id}">حذف</button></div>` : ""}
-      </div>
-    `;
-  }).join("");
-
-  listEl.querySelectorAll(".delBtn").forEach(btn => {
-    btn.addEventListener("click", async () => {
-      if (confirm("متأكد تريد تحذف هذا الطلب؟")) {
-        await deleteDoc(doc(db, "orders", btn.dataset.id));
+    const isFill = findKeyword(words, 'عبيت', 1) || findKeyword(words, 'عبي', 0);
+    if(isFill){
+      const m = line.match(/عب[ىي]?\S*\s*([\d.,]+)/);
+      if(m){
+        let numStr = m[1];
+        let asia;
+        if(numStr.includes('.') || numStr.includes(',')){
+          asia = parseInt(numStr.replace(/[.,]/g,''), 10);
+        } else {
+          asia = parseInt(numStr, 10);
+          if(asia < 1000) asia *= 1000;
+        }
+        if(!isNaN(asia)) added.push({type:'fill', category:null, asia, raw:bodyRaw, date:dateInfo.display, isoDate:dateInfo.iso, settled:false});
       }
-    });
+      continue;
+    }
+
+    const hasLiwa = findKeyword(words, 'لواء', 1);
+    const hasFaris = findKeyword(words, 'فارس', 1);
+    const numMatch = line.match(/\d+/);
+    const qty = numMatch ? parseInt(numMatch[0], 10) : 1;
+
+    if(hasLiwa){ added.push({type:'sale', category:'لواء', asia:LIWA_ASIA*qty, raw:bodyRaw, date:dateInfo.display, isoDate:dateInfo.iso}); continue; }
+    if(hasFaris){ added.push({type:'sale', category:'فارس', asia:FARIS_ASIA*qty, raw:bodyRaw, date:dateInfo.display, isoDate:dateInfo.iso}); continue; }
+
+    const hasTakeVerb = findKeyword(words, 'اخذت', 1) || findKeyword(words, 'اخدت', 1);
+    if(hasTakeVerb && numMatch){
+      const customAsia = parseInt(numMatch[0], 10);
+      if(!isNaN(customAsia) && customAsia > 0){
+        added.push({type:'sale', category:'مخصص', asia:customAsia, raw:bodyRaw, date:dateInfo.display, isoDate:dateInfo.iso});
+      }
+    }
+  }
+  return added;
+}
+
+// ---------- auth ----------
+document.getElementById('googleSignIn').addEventListener('click', () => {
+  signInWithPopup(auth, provider).catch(err => alert('تعذر تسجيل الدخول: ' + err.message));
+});
+document.getElementById('signOutBtn').addEventListener('click', () => signOut(auth));
+
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    currentUid = user.uid;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('userName').textContent = user.displayName || user.email || '';
+    document.getElementById('userPhoto').src = user.photoURL || '';
+    selectedMonth = currentMonthKey();
+    document.getElementById('monthSelect').value = selectedMonth;
+    await loadRates();
+    subscribeEntries();
+    subscribeRateHistory();
+    subscribeExpenses();
+  } else {
+    currentUid = null;
+    if(unsubEntries) unsubEntries();
+    if(unsubRateHistory) unsubRateHistory();
+    if(unsubExpenses) unsubExpenses();
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+});
+
+document.getElementById('monthSelect').addEventListener('change', (e)=>{
+  selectedMonth = e.target.value || currentMonthKey();
+  render();
+});
+
+// ---------- kebab menu + overlay ----------
+document.getElementById('kebabBtn').addEventListener('click', ()=>{
+  document.getElementById('kebabMenu').classList.toggle('open');
+});
+document.addEventListener('click', (e)=>{
+  const wrap = document.querySelector('.kebab-wrap');
+  if(wrap && !wrap.contains(e.target)){
+    document.getElementById('kebabMenu').classList.remove('open');
+  }
+});
+
+let overlayOrigin = null;
+function openOverlay(targetId){
+  const el = document.getElementById(targetId);
+  if(!el) return;
+  overlayOrigin = { parent: el.parentNode, next: el.nextSibling };
+  document.getElementById('overlayBody').appendChild(el);
+  document.getElementById('overlay').classList.add('active');
+  document.getElementById('kebabMenu').classList.remove('open');
+  window.scrollTo(0,0);
+}
+function closeOverlay(){
+  const body = document.getElementById('overlayBody');
+  const el = body.firstElementChild;
+  if(el && overlayOrigin){
+    if(overlayOrigin.next) overlayOrigin.parent.insertBefore(el, overlayOrigin.next);
+    else overlayOrigin.parent.appendChild(el);
+  }
+  document.getElementById('overlay').classList.remove('active');
+  overlayOrigin = null;
+}
+document.querySelectorAll('.kebab-menu button').forEach(btn=>{
+  btn.addEventListener('click', ()=> openOverlay(btn.getAttribute('data-target')));
+});
+document.getElementById('overlayClose').addEventListener('click', closeOverlay);
+
+let detailsShown = false;
+document.getElementById('toggleDetailsBtn').addEventListener('click', ()=>{
+  detailsShown = !detailsShown;
+  document.getElementById('detailsContainer').style.display = detailsShown ? 'block' : 'none';
+  document.getElementById('toggleDetailsBtn').textContent = detailsShown ? 'إخفاء كل التفاصيل' : 'إظهار كل التفاصيل';
+});
+
+// ---------- firestore data ----------
+async function loadRates(){
+  try{
+    const ref = doc(db, 'users', currentUid, 'settings', 'rates');
+    const snap = await getDoc(ref);
+    if(snap.exists()){
+      rates = snap.data();
+    } else {
+      await setDoc(ref, rates);
+    }
+  }catch(err){ console.error(err); }
+  document.getElementById('buyRate').value = rates.buy;
+  document.getElementById('sellRate').value = rates.sell;
+}
+
+async function saveRates(){
+  const newBuy = parseFloat(document.getElementById('buyRate').value) || 0;
+  const newSell = parseFloat(document.getElementById('sellRate').value) || 0;
+  const changed = (newBuy !== rates.buy) || (newSell !== rates.sell);
+  rates.buy = newBuy;
+  rates.sell = newSell;
+  try{
+    await setDoc(doc(db, 'users', currentUid, 'settings', 'rates'), rates);
+    if(changed){
+      const info = todayDateInfo();
+      await addDoc(collection(db, 'users', currentUid, 'rateHistory'), {
+        buy:newBuy, sell:newSell, date:info.display, isoDate:info.iso, ts:Date.now()
+      });
+    }
+  }catch(err){ console.error(err); }
+  render();
+}
+
+function subscribeEntries(){
+  const q = query(collection(db, 'users', currentUid, 'entries'), orderBy('ts', 'desc'));
+  unsubEntries = onSnapshot(q, (snapshot) => {
+    entries = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    render();
   });
 }
 
-/* ---------------- Grand totals (manager only) ---------------- */
-function renderGrandTotals() {
-  const box = document.getElementById("grandBox");
-  const unsubs = [];
-  const totals = {};
-  let grand = 0;
-
-  SECTIONS.forEach(s => {
-    const q = query(collection(db, "orders"), where("section", "==", s.id));
-    const unsub = onSnapshot(q, (snap) => {
-      let sum = 0, count = 0;
-      snap.forEach(d => { sum += d.data().profit || 0; count++; });
-      totals[s.id] = { sum, count, label: s.label };
-      grand = Object.values(totals).reduce((a, t) => a + t.sum, 0);
-      draw();
-    });
-    unsubs.push(unsub);
+function subscribeRateHistory(){
+  const q = query(collection(db, 'users', currentUid, 'rateHistory'), orderBy('ts', 'desc'));
+  unsubRateHistory = onSnapshot(q, (snapshot) => {
+    rateHistory = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    render();
   });
-  unsubscribeOrders = () => unsubs.forEach(u => u());
+}
 
-  function draw() {
-    let html = "";
-    SECTIONS.forEach(s => {
-      const t = totals[s.id];
-      if (!t) return;
-      html += `<div class="grandRow"><span>${t.label} (${t.count} طلب)</span><b>${t.sum.toLocaleString()}</b></div>`;
+function subscribeExpenses(){
+  const q = query(collection(db, 'users', currentUid, 'expenses'), orderBy('ts', 'desc'));
+  unsubExpenses = onSnapshot(q, (snapshot) => {
+    expenses = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    render();
+  });
+}
+
+async function addExpense(listId){
+  const amountInput = document.getElementById(`expAmount-${listId}`);
+  const noteInput = document.getElementById(`expNote-${listId}`);
+  const amount = parseFloat(amountInput.value);
+  if(!amount || amount <= 0) return;
+  const note = noteInput.value.trim();
+  const info = todayDateInfo();
+  try{
+    await addDoc(collection(db, 'users', currentUid, 'expenses'), {
+      listId, amount, note, date: info.display, isoDate: info.iso, ts: Date.now()
     });
-    html += `<div class="grandRow" style="border-top:2px solid var(--accent);margin-top:6px;padding-top:12px;"><span>الإجمالي الكلي</span><b>${grand.toLocaleString()}</b></div>`;
-    box.innerHTML = html;
+    amountInput.value = '';
+    noteInput.value = '';
+  }catch(err){ console.error(err); }
+}
+
+async function deleteExpense(id){
+  try{
+    await deleteDoc(doc(db, 'users', currentUid, 'expenses', id));
+  }catch(err){ console.error(err); }
+}
+
+async function addEntry(entry){
+  try{
+    await addDoc(collection(db, 'users', currentUid, 'entries'), { ...entry, ts: Date.now() });
+  }catch(err){ console.error(err); alert('تعذرت الإضافة، تأكد من الاتصال بالإنترنت.'); }
+}
+
+async function deleteEntry(id){
+  try{
+    await deleteDoc(doc(db, 'users', currentUid, 'entries', id));
+  }catch(err){ console.error(err); }
+}
+
+async function toggleSettled(id){
+  try{
+    await updateDoc(doc(db, 'users', currentUid, 'entries', id), { settled: true });
+  }catch(err){ console.error(err); }
+}
+
+async function settleAll(){
+  const unsettled = entries.filter(e=>e.type==='fill' && !e.settled);
+  if(unsettled.length === 0) return;
+  try{
+    const batch = writeBatch(db);
+    unsettled.forEach(e => batch.update(doc(db, 'users', currentUid, 'entries', e.id), { settled: true }));
+    await batch.commit();
+  }catch(err){ console.error(err); }
+}
+
+async function resetAll(){
+  const snap = await getDocs(collection(db, 'users', currentUid, 'entries'));
+  const batch = writeBatch(db);
+  snap.docs.forEach(d => batch.delete(d.ref));
+  await batch.commit();
+  const rhSnap = await getDocs(collection(db, 'users', currentUid, 'rateHistory'));
+  const batch2 = writeBatch(db);
+  rhSnap.docs.forEach(d => batch2.delete(d.ref));
+  await batch2.commit();
+}
+
+// ---------- stats ----------
+function computeTotals(list, buy, sell){
+  const sold = list.filter(e=>e.type==='sale');
+  const fills = list.filter(e=>e.type==='fill');
+  const soldAsia = sold.reduce((s,e)=>s+e.asia,0);
+  const fillAsia = fills.reduce((s,e)=>s+e.asia,0);
+  const cost = (soldAsia/10000)*buy;
+  const revenue = (soldAsia/10000)*sell;
+  return {
+    soldAsia, fillAsia, balance: soldAsia-fillAsia,
+    liwaCount: sold.filter(e=>e.category==='لواء').length,
+    farisCount: sold.filter(e=>e.category==='فارس').length,
+    customCount: sold.filter(e=>e.category==='مخصص').length,
+    cost, revenue, profit: revenue-cost
+  };
+}
+
+function buildChart(profits){
+  const w = 320, h = 140, pad = 24;
+  const max = Math.max(...profits, 0);
+  const min = Math.min(...profits, 0);
+  const range = (max - min) || 1;
+  const stepX = (w - 2*pad) / Math.max(profits.length - 1, 1);
+  const points = profits.map((p,i)=>{
+    const x = pad + i*stepX;
+    const y = h - pad - ((p - min)/range)*(h - 2*pad);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  const zeroY = h - pad - ((0 - min)/range)*(h - 2*pad);
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:140px;">
+    <line x1="${pad}" y1="${zeroY.toFixed(1)}" x2="${w-pad}" y2="${zeroY.toFixed(1)}" stroke="#28382F" stroke-width="1"/>
+    <polyline points="${points}" fill="none" stroke="#D4AF37" stroke-width="2"/>
+  </svg>`;
+}
+
+// ---------- render ----------
+function render(){
+  if(!entries) return;
+  const buy = parseFloat(document.getElementById('buyRate').value) || 0;
+  const sell = parseFloat(document.getElementById('sellRate').value) || 0;
+
+  const monthEntries = entries.filter(e => monthKeyOf(isoOfEntry(e)) === selectedMonth);
+  const t = computeTotals(monthEntries, buy, sell);
+
+  document.getElementById('heroProfit').textContent = fmtMoney(t.profit);
+  document.getElementById('heroSub').textContent = monthEntries.length
+    ? `${t.liwaCount} لواء و ${t.farisCount} فارس${t.customCount ? ' و '+t.customCount+' مخصص' : ''} · رصيد ${fmtNum(t.balance)} أسيا`
+    : 'لا توجد عمليات بهذا الشهر';
+
+  const dailyMap = {};
+  monthEntries.forEach(e=>{
+    const iso = isoOfEntry(e);
+    if(!dailyMap[iso]) dailyMap[iso] = { sold:0, fill:0, display: displayOfEntry(e) };
+    if(e.type==='sale') dailyMap[iso].sold += e.asia;
+    else dailyMap[iso].fill += e.asia;
+  });
+  const dailyKeysAsc = Object.keys(dailyMap).filter(Boolean).sort();
+  const dailyKeysDesc = [...dailyKeysAsc].reverse();
+
+  const activeDays = dailyKeysAsc.length;
+  document.getElementById('heroAvg').textContent = activeDays
+    ? `متوسط الربح اليومي: ${fmtMoney(t.profit/activeDays)} (${activeDays} يوم عمل)`
+    : '';
+
+  const { startIso, endIso } = currentWeekRange();
+  const weekEntries = entries.filter(e => { const iso = isoOfEntry(e); return iso >= startIso && iso <= endIso; });
+  const wt = computeTotals(weekEntries, buy, sell);
+  document.getElementById('weekProfit').textContent = fmtMoney(wt.profit);
+  document.getElementById('weekSold').textContent = fmtNum(wt.soldAsia);
+  document.getElementById('weekFill').textContent = fmtNum(wt.fillAsia);
+
+  const chartWrap = document.getElementById('chartWrap');
+  if(dailyKeysAsc.length < 2){
+    chartWrap.innerHTML = '<div class="empty">لا توجد بيانات كافية للرسم (يحتاج يومين على الأقل)</div>';
+  } else {
+    const dayProfits = dailyKeysAsc.map(iso=>{
+      const day = dailyMap[iso];
+      const dCost = (day.sold/10000)*buy;
+      const dRev = (day.sold/10000)*sell;
+      return dRev - dCost;
+    });
+    chartWrap.innerHTML = buildChart(dayProfits);
+  }
+
+  document.getElementById('statSoldAsia').textContent = fmtNum(t.soldAsia);
+  document.getElementById('statFillAsia').textContent = fmtNum(t.fillAsia);
+  document.getElementById('statBalanceAsia').textContent = fmtNum(t.balance);
+  document.getElementById('statCounts').textContent = `${t.liwaCount} لواء / ${t.farisCount} فارس` + (t.customCount ? ` / ${t.customCount} مخصص` : '');
+  document.getElementById('statCost').textContent = fmtMoney(t.cost);
+  document.getElementById('statRevenue').textContent = fmtMoney(t.revenue);
+  document.getElementById('statProfit').textContent = fmtMoney(t.profit);
+
+  const dailyList = document.getElementById('dailyList');
+  if(dailyKeysDesc.length === 0){
+    dailyList.innerHTML = '<div class="empty">لا توجد عمليات مسجلة</div>';
+  } else {
+    dailyList.innerHTML = dailyKeysDesc.map(iso=>{
+      const day = dailyMap[iso];
+      const dCost = (day.sold/10000)*buy;
+      const dRev = (day.sold/10000)*sell;
+      const dProfit = dRev - dCost;
+      const netChange = day.sold - day.fill;
+      const arrow = netChange > 0 ? '<span class="arrow-up">▲</span>' : (netChange < 0 ? '<span class="arrow-down">▼</span>' : '—');
+      return `<div class="log-item">
+        <div>
+          <div class="num">${day.display}</div>
+          <div class="log-meta">مبيعات ${fmtNum(day.sold)} · تعبئة ${fmtNum(day.fill)} · تحرك الميزان ${arrow} ${fmtNum(Math.abs(netChange))}</div>
+        </div>
+        <div class="log-amt num gold">${fmtMoney(dProfit)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  const allDailyMap = {};
+  entries.forEach(e=>{
+    const iso = isoOfEntry(e);
+    if(!iso) return;
+    if(!allDailyMap[iso]) allDailyMap[iso] = { sold:0, display: displayOfEntry(e) };
+    if(e.type==='sale') allDailyMap[iso].sold += e.asia;
+  });
+  const goldenDays = Object.keys(allDailyMap).map(iso=>{
+    const day = allDailyMap[iso];
+    const dCost = (day.sold/10000)*buy;
+    const dRev = (day.sold/10000)*sell;
+    return { display: day.display, profit: dRev - dCost };
+  }).sort((a,b)=>b.profit-a.profit).slice(0,5);
+  const goldenList = document.getElementById('goldenList');
+  if(goldenDays.length === 0){
+    goldenList.innerHTML = '<div class="empty">لا توجد بيانات كافية</div>';
+  } else {
+    goldenList.innerHTML = goldenDays.map((d,i)=>`<div class="log-item">
+      <div>${i+1}. <span class="num">${d.display}</span></div>
+      <div class="log-amt num gold">${fmtMoney(d.profit)}</div>
+    </div>`).join('');
+  }
+
+  const rhList = document.getElementById('rateHistoryList');
+  if(rateHistory.length === 0){
+    rhList.innerHTML = '<div class="empty">ما تغيرت الأسعار بعد</div>';
+  } else {
+    rhList.innerHTML = rateHistory.map(r=>`<div class="log-item">
+      <div class="num">${r.date || ''}</div>
+      <div class="num">شراء ${r.buy} / بيع ${r.sell}</div>
+    </div>`).join('');
+  }
+
+  const fills = entries.filter(e=>e.type==='fill');
+  const unsettledFills = fills.filter(e=>!e.settled);
+  const unsettledTotal = unsettledFills.reduce((s,e)=>s+e.asia,0);
+  document.getElementById('settleTotal').textContent = unsettledTotal > 0
+    ? `غير مصفى: ${fmtNum(unsettledTotal)} أسيا`
+    : 'لا توجد تعبئات غير مصفاة';
+  document.getElementById('settleAllBtn').style.display = unsettledTotal > 0 ? 'block' : 'none';
+
+  const settleList = document.getElementById('settleList');
+  if(unsettledFills.length === 0){
+    settleList.innerHTML = '<div class="empty">لا توجد تعبئات غير مصفاة</div>';
+  } else {
+    settleList.innerHTML = unsettledFills.map(e=>`<div class="settle-item">
+      <div>
+        <div class="num">${fmtNum(e.asia)} أسيا</div>
+        <div class="log-meta">${displayOfEntry(e)} — ${(e.raw||'').slice(0,30)}</div>
+      </div>
+      <button class="settle-btn" data-id="${e.id}">تصفية</button>
+    </div>`).join('');
+    settleList.querySelectorAll('.settle-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=> toggleSettled(btn.getAttribute('data-id')));
+    });
+  }
+
+  EXPENSE_LISTS.forEach(listId=>{
+    const list = expenses.filter(e=>e.listId===listId);
+    const total = list.reduce((s,e)=>s+e.amount,0);
+    document.getElementById(`expTotal-${listId}`).textContent = `الإجمالي: ${fmtMoney(total)}`;
+    const listEl = document.getElementById(`expList-${listId}`);
+    if(list.length === 0){
+      listEl.innerHTML = '<div class="empty">لا توجد مصاريف مسجلة</div>';
+    } else {
+      listEl.innerHTML = list.map(e=>`<div class="log-item">
+        <div>
+          <div class="num">${fmtMoney(e.amount)}</div>
+          <div class="log-meta">${e.date || ''}${e.note ? ' — '+e.note : ''}</div>
+        </div>
+        <button class="del-btn" data-id="${e.id}">حذف</button>
+      </div>`).join('');
+      listEl.querySelectorAll('.del-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=> deleteExpense(btn.getAttribute('data-id')));
+      });
+    }
+  });
+
+  const logList = document.getElementById('logList');
+  if(monthEntries.length === 0){
+    logList.innerHTML = '<div class="empty">لا توجد عمليات مسجلة بهذا الشهر</div>';
+  } else {
+    logList.innerHTML = monthEntries.map(e=>{
+      const label = e.type==='sale' ? e.category : 'تعبئة';
+      const sign = e.type==='sale' ? '−' : '+';
+      const cls = e.type==='sale' ? 'sale' : 'fill';
+      return `<div class="log-item">
+        <div>
+          <div>${label} <span class="log-meta">${displayOfEntry(e)}</span></div>
+          <div class="log-meta">${(e.raw||'').slice(0,40)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="log-amt num ${cls}">${sign}${fmtNum(e.asia)}</div>
+          <button class="del-btn" data-id="${e.id}">حذف</button>
+        </div>
+      </div>`;
+    }).join('');
+    logList.querySelectorAll('.del-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=> deleteEntry(btn.getAttribute('data-id')));
+    });
   }
 }
 
-function escapeHtml(str) {
-  const div = document.createElement("div");
-  div.textContent = str;
-  return div.innerHTML;
-}
+document.getElementById('parseBtn').addEventListener('click', async ()=>{
+  const box = document.getElementById('pasteBox');
+  const added = parseMessages(box.value);
+  if(added.length === 0) return;
+  box.value = '';
+  for(const entry of added) await addEntry(entry);
+});
+
+document.getElementById('addLiwa').addEventListener('click', ()=>{
+  const info = todayDateInfo();
+  addEntry({type:'sale', category:'لواء', asia:LIWA_ASIA, raw:'إضافة يدوية', date:info.display, isoDate:info.iso});
+});
+document.getElementById('addFaris').addEventListener('click', ()=>{
+  const info = todayDateInfo();
+  addEntry({type:'sale', category:'فارس', asia:FARIS_ASIA, raw:'إضافة يدوية', date:info.display, isoDate:info.iso});
+});
+document.getElementById('addFill').addEventListener('click', ()=>{
+  const val = prompt('كم عبيت؟ (مثلا 20 يعني 20,000)');
+  if(val === null) return;
+  let asia = parseInt(val.replace(/[.,]/g,''), 10);
+  if(isNaN(asia)) return;
+  if(asia < 1000 && !val.includes('.') && !val.includes(',')) asia *= 1000;
+  const info = todayDateInfo();
+  addEntry({type:'fill', category:null, asia, raw:'تعبئة يدوية: '+val, date:info.display, isoDate:info.iso, settled:false});
+});
+
+document.getElementById('buyRate').addEventListener('change', saveRates);
+document.getElementById('sellRate').addEventListener('change', saveRates);
+
+document.getElementById('settleAllBtn').addEventListener('click', settleAll);
+
+EXPENSE_LISTS.forEach(listId=>{
+  document.getElementById(`expAddBtn-${listId}`).addEventListener('click', ()=> addExpense(listId));
+});
+
+document.getElementById('resetBtn').addEventListener('click', async ()=>{
+  if(confirm('متأكد تريد تصفير كل البيانات من كل الأشهر؟ هذا الإجراء لا يمكن التراجع عنه.')){
+    await resetAll();
+  }
+});
 </script>
 </body>
 </html>
