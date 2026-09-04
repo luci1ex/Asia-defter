@@ -240,6 +240,8 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
         <div id="logList"><div class="empty">لا توجد عمليات مسجلة</div></div>
         <p class="sync-note">يتزامن تلقائي مع حسابك — يفتح بنفس البيانات من أي جهاز</p>
       </div>
+
+      <button class="reset-link" id="resetProfitsBtn">تصفير بيانات الأرباح فقط (كل الأشهر)</button>
     </div>
 
     <div class="panel" id="panel-weekly">
@@ -272,6 +274,7 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
       </div>
       <button class="btn btn-primary" id="expAddBtn-ali-personal">إضافة مصروف</button>
       <div id="expList-ali-personal"><div class="empty">لا توجد مصاريف مسجلة</div></div>
+      <button class="reset-link" id="resetExp-ali-personal">تصفير هذه القائمة</button>
     </div>
 
     <div class="panel" id="panel-exp-ali-work">
@@ -283,6 +286,7 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
       </div>
       <button class="btn btn-primary" id="expAddBtn-ali-work">إضافة مصروف</button>
       <div id="expList-ali-work"><div class="empty">لا توجد مصاريف مسجلة</div></div>
+      <button class="reset-link" id="resetExp-ali-work">تصفير هذه القائمة</button>
     </div>
 
     <div class="panel" id="panel-exp-hussein-personal">
@@ -294,11 +298,12 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
       </div>
       <button class="btn btn-primary" id="expAddBtn-hussein-personal">إضافة مصروف</button>
       <div id="expList-hussein-personal"><div class="empty">لا توجد مصاريف مسجلة</div></div>
+      <button class="reset-link" id="resetExp-hussein-personal">تصفير هذه القائمة</button>
     </div>
 
   </div>
 
-  <button class="reset-link" id="resetBtn">تصفير كل البيانات (كل الأشهر)</button>
+  <button class="reset-link" id="resetBtn">تصفير كل شي (الأرباح + كل قوائم المصاريف)</button>
 </div>
 
 <div class="overlay" id="overlay">
@@ -646,15 +651,32 @@ async function settleAll(){
   }catch(err){ console.error(err); }
 }
 
-async function resetAll(){
-  const snap = await getDocs(collection(db, 'users', currentUid, 'entries'));
+async function deleteCollection(path){
+  const snap = await getDocs(collection(db, 'users', currentUid, path));
   const batch = writeBatch(db);
   snap.docs.forEach(d => batch.delete(d.ref));
   await batch.commit();
-  const rhSnap = await getDocs(collection(db, 'users', currentUid, 'rateHistory'));
-  const batch2 = writeBatch(db);
-  rhSnap.docs.forEach(d => batch2.delete(d.ref));
-  await batch2.commit();
+}
+
+async function resetAll(){
+  await deleteCollection('entries');
+  await deleteCollection('rateHistory');
+  await deleteCollection('expenses');
+}
+
+async function resetEntries(){
+  await deleteCollection('entries');
+  await deleteCollection('rateHistory');
+}
+
+async function resetExpenseList(listId){
+  const list = expenses.filter(e=>e.listId===listId);
+  if(list.length === 0) return;
+  try{
+    const batch = writeBatch(db);
+    list.forEach(e => batch.delete(doc(db, 'users', currentUid, 'expenses', e.id)));
+    await batch.commit();
+  }catch(err){ console.error(err); }
 }
 
 // ---------- stats ----------
@@ -906,10 +928,21 @@ document.getElementById('settleAllBtn').addEventListener('click', settleAll);
 
 EXPENSE_LISTS.forEach(listId=>{
   document.getElementById(`expAddBtn-${listId}`).addEventListener('click', ()=> addExpense(listId));
+  document.getElementById(`resetExp-${listId}`).addEventListener('click', async ()=>{
+    if(confirm('متأكد تريد تصفير هذه القائمة؟ هذا الإجراء لا يمكن التراجع عنه.')){
+      await resetExpenseList(listId);
+    }
+  });
+});
+
+document.getElementById('resetProfitsBtn').addEventListener('click', async ()=>{
+  if(confirm('متأكد تريد تصفير بيانات الأرباح (المبيعات والتعبئات) من كل الأشهر؟ هذا الإجراء لا يمكن التراجع عنه.')){
+    await resetEntries();
+  }
 });
 
 document.getElementById('resetBtn').addEventListener('click', async ()=>{
-  if(confirm('متأكد تريد تصفير كل البيانات من كل الأشهر؟ هذا الإجراء لا يمكن التراجع عنه.')){
+  if(confirm('متأكد تريد تصفير كل شي — الأرباح وكل قوائم المصاريف من كل الأشهر؟ هذا الإجراء لا يمكن التراجع عنه.')){
     await resetAll();
   }
 });
