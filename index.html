@@ -685,15 +685,23 @@ function computeTotals(list, buy, sell){
   const fills = list.filter(e=>e.type==='fill');
   const soldAsia = sold.reduce((s,e)=>s+e.asia,0);
   const fillAsia = fills.reduce((s,e)=>s+e.asia,0);
-  const cost = (soldAsia/10000)*buy;
-  const revenue = (soldAsia/10000)*sell;
+  const netAsia = soldAsia - fillAsia;
+  const cost = (netAsia/10000)*buy;
+  const revenue = (netAsia/10000)*sell;
   return {
-    soldAsia, fillAsia, balance: soldAsia-fillAsia,
+    soldAsia, fillAsia, balance: netAsia,
     liwaCount: sold.filter(e=>e.category==='لواء').length,
     farisCount: sold.filter(e=>e.category==='فارس').length,
     customCount: sold.filter(e=>e.category==='مخصص').length,
     cost, revenue, profit: revenue-cost
   };
+}
+
+function dayProfit(sold, fill, buy, sell){
+  const net = sold - fill;
+  const cost = (net/10000)*buy;
+  const revenue = (net/10000)*sell;
+  return revenue - cost;
 }
 
 function buildChart(profits){
@@ -756,9 +764,7 @@ function render(){
   } else {
     const dayProfits = dailyKeysAsc.map(iso=>{
       const day = dailyMap[iso];
-      const dCost = (day.sold/10000)*buy;
-      const dRev = (day.sold/10000)*sell;
-      return dRev - dCost;
+      return dayProfit(day.sold, day.fill, buy, sell);
     });
     chartWrap.innerHTML = buildChart(dayProfits);
   }
@@ -777,9 +783,7 @@ function render(){
   } else {
     dailyList.innerHTML = dailyKeysDesc.map(iso=>{
       const day = dailyMap[iso];
-      const dCost = (day.sold/10000)*buy;
-      const dRev = (day.sold/10000)*sell;
-      const dProfit = dRev - dCost;
+      const dProfit = dayProfit(day.sold, day.fill, buy, sell);
       const netChange = day.sold - day.fill;
       const arrow = netChange > 0 ? '<span class="arrow-up">▲</span>' : (netChange < 0 ? '<span class="arrow-down">▼</span>' : '—');
       return `<div class="log-item">
@@ -796,14 +800,13 @@ function render(){
   entries.forEach(e=>{
     const iso = isoOfEntry(e);
     if(!iso) return;
-    if(!allDailyMap[iso]) allDailyMap[iso] = { sold:0, display: displayOfEntry(e) };
+    if(!allDailyMap[iso]) allDailyMap[iso] = { sold:0, fill:0, display: displayOfEntry(e) };
     if(e.type==='sale') allDailyMap[iso].sold += e.asia;
+    else allDailyMap[iso].fill += e.asia;
   });
   const goldenDays = Object.keys(allDailyMap).map(iso=>{
     const day = allDailyMap[iso];
-    const dCost = (day.sold/10000)*buy;
-    const dRev = (day.sold/10000)*sell;
-    return { display: day.display, profit: dRev - dCost };
+    return { display: day.display, profit: dayProfit(day.sold, day.fill, buy, sell) };
   }).sort((a,b)=>b.profit-a.profit).slice(0,5);
   const goldenList = document.getElementById('goldenList');
   if(goldenDays.length === 0){
