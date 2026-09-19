@@ -425,7 +425,8 @@ function parseMessages(text){
   const lines = text.split('\n').map(l=>l.trim()).filter(Boolean);
   const added = [];
   for(const raw of lines){
-    const bodyRaw = stripMeta(stripControlChars(raw)).trim();
+    const sourceLine = stripControlChars(raw).trim();
+    const bodyRaw = stripMeta(sourceLine).trim();
     if(!bodyRaw) continue;
     const dateInfo = extractDateInfo(raw);
     const line = normalize(bodyRaw);
@@ -443,7 +444,7 @@ function parseMessages(text){
           asia = parseInt(numStr, 10);
           if(asia < 1000) asia *= 1000;
         }
-        if(!isNaN(asia)) added.push({type:'fill', category:null, asia, raw:bodyRaw, date:dateInfo.display, isoDate:dateInfo.iso, settled:false});
+        if(!isNaN(asia)) added.push({type:'fill', category:null, asia, raw:bodyRaw, sourceLine, date:dateInfo.display, isoDate:dateInfo.iso, settled:false});
       }
       continue;
     }
@@ -453,14 +454,14 @@ function parseMessages(text){
     const numMatch = line.match(/\d+/);
     const qty = numMatch ? parseInt(numMatch[0], 10) : 1;
 
-    if(hasLiwa){ added.push({type:'sale', category:'لواء', asia:LIWA_ASIA*qty, raw:bodyRaw, date:dateInfo.display, isoDate:dateInfo.iso}); continue; }
-    if(hasFaris){ added.push({type:'sale', category:'فارس', asia:FARIS_ASIA*qty, raw:bodyRaw, date:dateInfo.display, isoDate:dateInfo.iso}); continue; }
+    if(hasLiwa){ added.push({type:'sale', category:'لواء', asia:LIWA_ASIA*qty, raw:bodyRaw, sourceLine, date:dateInfo.display, isoDate:dateInfo.iso}); continue; }
+    if(hasFaris){ added.push({type:'sale', category:'فارس', asia:FARIS_ASIA*qty, raw:bodyRaw, sourceLine, date:dateInfo.display, isoDate:dateInfo.iso}); continue; }
 
     const hasTakeVerb = findKeyword(words, 'اخذت', 1) || findKeyword(words, 'اخدت', 1);
     if(hasTakeVerb && numMatch){
       const customAsia = parseInt(numMatch[0], 10);
       if(!isNaN(customAsia) && customAsia > 0){
-        added.push({type:'sale', category:'مخصص', asia:customAsia, raw:bodyRaw, date:dateInfo.display, isoDate:dateInfo.iso});
+        added.push({type:'sale', category:'مخصص', asia:customAsia, raw:bodyRaw, sourceLine, date:dateInfo.display, isoDate:dateInfo.iso});
       }
     }
   }
@@ -900,10 +901,28 @@ function render(){
 
 document.getElementById('parseBtn').addEventListener('click', async ()=>{
   const box = document.getElementById('pasteBox');
-  const added = parseMessages(box.value);
-  if(added.length === 0) return;
+  const parsed = parseMessages(box.value);
+  if(parsed.length === 0) return;
+
+  const existingSourceLines = new Set(entries.filter(e=>e.sourceLine).map(e=>e.sourceLine));
+  const seenInBatch = new Set();
+  const toAdd = [];
+  let skipped = 0;
+  for(const entry of parsed){
+    const key = entry.sourceLine;
+    if(key && (existingSourceLines.has(key) || seenInBatch.has(key))){
+      skipped++;
+      continue;
+    }
+    if(key) seenInBatch.add(key);
+    toAdd.push(entry);
+  }
+
   box.value = '';
-  for(const entry of added) await addEntry(entry);
+  for(const entry of toAdd) await addEntry(entry);
+  if(skipped > 0){
+    alert(`تمت إضافة ${toAdd.length} عملية. تجاهلت ${skipped} رسالة مكررة (موجودة أصلاً).`);
+  }
 });
 
 document.getElementById('addLiwa').addEventListener('click', ()=>{
