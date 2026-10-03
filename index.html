@@ -2,142 +2,197 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0C1714">
 <title>دفتر أسيا</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap');
 
 :root{
-  --bg:#0F1C18;
-  --panel:#16241F;
-  --panel-alt:#1D2E27;
+  --bg:#0C1714;
+  --surface:#13211C;
+  --surface-2:#1A2B25;
+  --surface-3:#22362E;
   --text:#EDE6D6;
   --text-dim:#8FA69C;
+  --text-faint:#62786E;
   --gold:#D4AF37;
   --gold-dim:#9C8433;
-  --rose:#C1544A;
+  --gold-soft:rgba(212,175,55,.12);
+  --rose:#D0665B;
   --green:#5FA97E;
-  --line:#28382F;
+  --green-soft:rgba(95,169,126,.14);
+  --line:#24352E;
+  --radius:14px;
 }
-*{box-sizing:border-box;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;}
 body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Tajawal',sans-serif;
-  padding:20px 16px 60px;
+  background:var(--bg);color:var(--text);
+  font-family:'Tajawal',sans-serif;font-size:15px;line-height:1.5;
   min-height:100vh;
 }
-.num{font-family:'JetBrains Mono',monospace;direction:ltr;unicode-bidi:plaintext;}
+body.no-scroll{overflow:hidden;}
+button{font-family:inherit;color:inherit;}
+.wrap{max-width:520px;margin:0 auto;padding:16px 16px calc(48px + env(safe-area-inset-bottom));}
+.num{font-family:'JetBrains Mono',monospace;direction:ltr;unicode-bidi:isolate;}
 .gold{color:var(--gold);}
-.rose{color:var(--rose);}
 .green{color:var(--green);}
+.rose{color:var(--rose);}
+.muted{color:var(--text-faint);}
+[hidden]{display:none !important;}
 
-#loginScreen{
-  min-height:80vh;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;gap:18px;
-}
-#loginScreen h1{font-size:22px;margin:0;color:var(--gold);}
-#loginScreen p{color:var(--text-dim);font-size:14px;max-width:320px;margin:0;}
-.google-btn{
-  display:flex;align-items:center;gap:10px;
-  background:#fff;color:#1F1F1F;border:none;border-radius:8px;
-  padding:12px 20px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:15px;cursor:pointer;
-}
+/* ---------- login ---------- */
+#loginScreen{min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;padding:24px;}
+.logo-mark{width:64px;height:64px;border-radius:18px;background:var(--gold-soft);border:1px solid rgba(212,175,55,.35);display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--gold);font-weight:800;}
+#loginScreen h1{font-size:24px;margin:0;color:var(--gold);}
+#loginScreen p{color:var(--text-dim);font-size:14px;max-width:300px;margin:0;}
+.google-btn{display:flex;align-items:center;gap:10px;background:#fff;color:#1F1F1F;border:none;border-radius:10px;padding:13px 22px;font-weight:700;font-size:15px;cursor:pointer;margin-top:8px;}
 .google-btn img{width:18px;height:18px;}
 
+/* ---------- top bar ---------- */
 #app{display:none;}
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:10px;}
-.user-chip{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dim);flex:1;min-width:0;}
-.user-chip img{width:24px;height:24px;border-radius:50%;flex-shrink:0;}
-.user-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.signout-btn{background:none;border:none;color:var(--text-dim);font-size:12px;text-decoration:underline;padding:4px;flex-shrink:0;}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;}
+.user-chip{display:flex;align-items:center;gap:10px;min-width:0;}
+.avatar{position:relative;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);flex-shrink:0;background:var(--gold-soft);color:var(--gold);font-weight:800;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.hello{font-size:11px;color:var(--text-faint);line-height:1.2;}
+.uname{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px;}
+.icon-btn{background:var(--surface);border:1px solid var(--line);border-radius:10px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;flex-shrink:0;line-height:1;}
+.icon-btn:active{background:var(--surface-2);}
 
-.kebab-wrap{position:relative;flex-shrink:0;}
-.kebab-btn{background:var(--panel-alt);border:1px solid var(--line);color:var(--text);font-size:18px;cursor:pointer;padding:5px 12px;line-height:1;border-radius:7px;}
-.kebab-menu{display:none;position:absolute;top:115%;left:0;background:var(--panel-alt);border:1px solid var(--line);border-radius:8px;min-width:190px;z-index:60;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.4);}
+.kebab-wrap{position:relative;}
+.kebab-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;min-width:230px;z-index:60;padding:6px;box-shadow:0 14px 34px rgba(0,0,0,.5);}
 .kebab-menu.open{display:block;}
-.kebab-menu button{display:block;width:100%;text-align:right;background:none;border:none;color:var(--text);padding:12px 14px;font-family:'Tajawal',sans-serif;font-size:13px;cursor:pointer;border-bottom:1px solid var(--line);}
-.kebab-menu button:last-child{border-bottom:none;}
-.kebab-menu button:active{background:var(--panel);}
+.menu-label{font-size:11px;color:var(--text-faint);padding:8px 10px 4px;}
+.menu-item{display:flex;align-items:center;gap:10px;width:100%;text-align:right;background:none;border:none;padding:10px;font-size:14px;cursor:pointer;border-radius:8px;}
+.menu-item:active{background:var(--surface-3);}
+.menu-item .ic{width:22px;text-align:center;}
+.menu-sep{height:1px;background:var(--line);margin:6px 4px;}
 
-header{margin-bottom:14px;}
-.eyebrow{color:var(--text-dim);font-size:13px;margin:0 0 6px;}
-.hero-num{font-size:44px;font-weight:900;color:var(--gold);line-height:1.1;margin:0;}
-.hero-sub{color:var(--text-dim);font-size:13px;margin-top:6px;}
-.hero-avg{color:var(--text-dim);font-size:12px;margin-top:4px;}
+/* ---------- month switcher ---------- */
+.month-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.month-label{position:relative;flex:1;height:40px;display:flex;align-items:center;justify-content:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;}
+.month-label .caret{color:var(--text-faint);font-size:11px;}
+.month-label input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;}
 
-.month-picker{
-  display:flex;align-items:center;justify-content:space-between;
-  background:var(--panel-alt);border:1px solid var(--line);border-radius:8px;
-  padding:9px 12px;margin-bottom:14px;font-size:13px;
-}
-.month-picker input{background:none;border:none;color:var(--text);font-family:'Tajawal',sans-serif;font-size:14px;font-weight:700;direction:ltr;}
-.month-picker .lbl{color:var(--text-dim);}
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;background:linear-gradient(155deg,#1D3229 0%,#13211C 65%);border:1px solid rgba(212,175,55,.28);border-radius:18px;padding:18px 18px 14px;margin-bottom:12px;}
+.hero::before{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,.16),transparent 70%);top:-70px;left:-50px;pointer-events:none;}
+.hero-top{display:flex;justify-content:space-between;align-items:center;gap:8px;position:relative;}
+.eyebrow{font-size:13px;color:var(--text-dim);}
+.badge{font-size:11px;color:var(--text-dim);background:rgba(0,0,0,.22);border:1px solid var(--line);padding:3px 9px;border-radius:999px;white-space:nowrap;}
+.hero-num{font-size:46px;font-weight:700;color:var(--gold);line-height:1.1;margin:8px 0 6px;position:relative;}
+.hero-sub{font-size:12.5px;color:var(--green);position:relative;}
+.hero-sub .muted{font-size:11px;}
+.hero-total{font-size:12px;color:var(--text-dim);margin-top:2px;position:relative;}
+.hero-total .num{color:var(--text);font-weight:700;}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);position:relative;}
+.hero-stats .k{font-size:11px;color:var(--text-faint);}
+.hero-stats .v{font-size:13.5px;font-weight:700;}
 
-.panel{background:var(--panel);border-top:2px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px;}
-.panel h2{font-size:14px;font-weight:700;margin:0 0 12px;color:var(--text-dim);}
-.rates{display:flex;gap:10px;}
-.rate-field{flex:1;}
-.rate-field label{display:block;font-size:12px;color:var(--text-dim);margin-bottom:5px;}
-.rate-field input{width:100%;background:var(--panel-alt);border:1px solid var(--line);color:var(--text);font-family:'JetBrains Mono',monospace;direction:ltr;text-align:center;font-size:16px;padding:9px 6px;border-radius:7px;}
-textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:10px;font-family:'Tajawal',sans-serif;font-size:14px;resize:vertical;}
-.btn{border:none;border-radius:7px;padding:11px 14px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:14px;cursor:pointer;}
+/* ---------- tiles ---------- */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;text-align:right;cursor:pointer;}
+.tile:active{background:var(--surface-2);}
+.tile .k{font-size:12px;color:var(--text-dim);display:flex;justify-content:space-between;align-items:center;}
+.tile .k .arrow{color:var(--text-faint);font-size:12px;}
+.tile .v{font-size:19px;font-weight:700;margin-top:2px;}
+.tile .s{font-size:11px;color:var(--text-faint);}
+
+.rates-chip{width:100%;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:transparent;border:1px dashed var(--line);border-radius:10px;padding:9px 12px;font-size:12.5px;color:var(--text-dim);cursor:pointer;margin-bottom:12px;}
+.rates-chip b{color:var(--text);font-weight:700;}
+.rates-chip .dot{color:var(--text-faint);}
+.rates-chip .edit{margin-right:auto;color:var(--gold);font-weight:700;}
+
+/* ---------- cards ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.card h2,.card-head h2{font-size:14px;font-weight:700;margin:0;color:var(--text-dim);}
+.card > h2{margin-bottom:12px;}
+.link-btn{background:none;border:none;color:var(--gold);font-size:13px;font-weight:700;cursor:pointer;padding:4px;}
+
+.seg{display:flex;background:var(--surface-2);border-radius:10px;padding:4px;margin-bottom:12px;}
+.seg-btn{flex:1;background:none;border:none;padding:9px;border-radius:8px;font-size:13.5px;font-weight:700;color:var(--text-dim);cursor:pointer;}
+.seg-btn.active{background:var(--surface-3);color:var(--gold);}
+
+textarea{width:100%;min-height:110px;background:var(--surface-2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:12px;font-family:'Tajawal',sans-serif;font-size:14px;resize:vertical;}
+textarea:focus,input:focus{outline:none;border-color:var(--gold-dim);}
+.btn{border:none;border-radius:10px;padding:12px 14px;font-weight:700;font-size:14.5px;cursor:pointer;}
 .btn-primary{background:var(--gold);color:#1A1305;width:100%;margin-top:10px;}
 .btn-primary:active{background:var(--gold-dim);}
-.btn-toggle{background:var(--panel-alt);color:var(--text);border:1px solid var(--line);width:100%;margin-bottom:14px;}
-.btn-toggle:active{border-color:var(--gold);}
-.quickrow{display:flex;gap:8px;}
-.btn-quick{flex:1;background:var(--panel-alt);color:var(--text);border:1px solid var(--line);}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--text-dim);width:100%;margin-bottom:12px;}
+.btn-green{background:var(--green);color:#0C1714;width:100%;margin-bottom:12px;}
+.quickrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.btn-quick{background:var(--surface-2);border:1px solid var(--line);padding:16px 8px;display:flex;flex-direction:column;align-items:center;gap:2px;}
 .btn-quick:active{border-color:var(--gold);}
+.btn-quick .big{font-size:15px;font-weight:700;}
+.btn-quick .small{font-size:10.5px;color:var(--text-faint);font-weight:500;}
 
-.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.stat{background:var(--panel-alt);border-radius:8px;padding:12px;}
-.stat .label{font-size:12px;color:var(--text-dim);margin-bottom:4px;}
-.stat .value{font-size:19px;font-weight:700;}
-.stat .value.gold{color:var(--gold);}
-.stat .value.rose{color:var(--rose);}
-.stat.wide{grid-column:1/3;}
+.field{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0;}
+.field label{font-size:12px;color:var(--text-dim);}
+.field input{width:100%;background:var(--surface-2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px;font-size:15px;}
+.field input.num{text-align:center;}
+.fields{display:flex;gap:10px;}
+.hint{font-size:11.5px;color:var(--text-faint);margin-top:8px;}
 
-.log-item{display:flex;justify-content:space-between;align-items:center;padding:10px 2px;border-bottom:1px solid var(--line);font-size:14px;}
-.log-item:last-child{border-bottom:none;}
-.log-meta{color:var(--text-dim);font-size:12px;margin-top:2px;}
-.log-amt{font-weight:700;}
-.log-amt.sale{color:var(--rose);}
-.log-amt.fill{color:var(--green);}
-.del-btn{background:none;border:none;color:var(--text-dim);font-size:12px;padding:6px;cursor:pointer;}
-.empty{color:var(--text-dim);font-size:13px;text-align:center;padding:14px 0;}
-.reset-link{display:block;text-align:center;color:var(--text-dim);font-size:12px;margin-top:18px;background:none;border:none;width:100%;padding:8px;}
-.sync-note{font-size:11px;color:var(--text-dim);text-align:center;margin-top:6px;}
-
+/* ---------- rows ---------- */
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line);}
+.row:last-child{border-bottom:none;}
+.row-main{min-width:0;}
+.row-title{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.row-meta{font-size:12px;color:var(--text-faint);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.row-end{display:flex;align-items:center;gap:8px;flex-shrink:0;text-align:left;}
+.amt{font-weight:700;font-size:14px;}
+.amt-sub{font-size:11px;color:var(--green);}
+.amt.sale{color:var(--rose);}
+.amt.fill{color:var(--green);}
+.tag{font-size:10.5px;padding:1px 7px;border-radius:999px;background:var(--surface-3);color:var(--text-dim);font-weight:500;}
+.tag.fill{background:var(--green-soft);color:var(--green);}
+.tag.sale{background:rgba(208,102,91,.13);color:var(--rose);}
+.del-btn{background:none;border:none;color:var(--text-faint);font-size:16px;padding:4px 6px;cursor:pointer;line-height:1;}
+.small-btn{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;}
+.rank{width:24px;height:24px;border-radius:50%;background:var(--gold-soft);color:var(--gold);font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.empty{color:var(--text-faint);font-size:13px;text-align:center;padding:16px 0;}
 .arrow-up{color:var(--rose);}
 .arrow-down{color:var(--green);}
 
-.settle-item{display:flex;justify-content:space-between;align-items:center;padding:10px 2px;border-bottom:1px solid var(--line);font-size:14px;}
-.settle-item:last-child{border-bottom:none;}
-.settle-btn{background:var(--panel-alt);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:7px 12px;font-family:'Tajawal',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
-.settle-total{font-size:13px;color:var(--text-dim);margin-bottom:10px;}
-.settle-all-btn{background:var(--green);color:#0F1C18;border:none;border-radius:7px;padding:11px 14px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:14px;cursor:pointer;width:100%;margin-bottom:14px;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.stat{background:var(--surface-2);border-radius:10px;padding:11px 12px;}
+.stat .label{font-size:11.5px;color:var(--text-dim);margin-bottom:2px;}
+.stat .value{font-size:17px;font-weight:700;}
+.stat.wide{grid-column:1/3;}
 
-.chart-wrap{width:100%;}
+.total-line{font-size:13px;color:var(--text-dim);margin-bottom:12px;}
+.total-line b{color:var(--text);}
 
-.exp-row{display:flex;gap:8px;margin-bottom:10px;}
-.exp-row input{background:var(--panel-alt);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 10px;font-family:'Tajawal',sans-serif;font-size:14px;}
+.exp-row{display:flex;gap:8px;}
+.exp-row input{background:var(--surface-2);border:1px solid var(--line);color:var(--text);border-radius:10px;padding:10px;font-family:'Tajawal',sans-serif;font-size:14px;}
 .exp-row input[type=text]{flex:1;min-width:0;}
-.exp-row input[type=number]{width:110px;font-family:'JetBrains Mono',monospace;direction:ltr;text-align:center;}
-.exp-total{font-size:13px;color:var(--text-dim);margin-bottom:10px;}
+.exp-row input[type=number]{width:105px;font-family:'JetBrains Mono',monospace;direction:ltr;text-align:center;}
 
-#detailsContainer{display:none;}
+.sec-title{font-size:16px;font-weight:800;margin:20px 2px 10px;color:var(--text);}
+.reset-link{display:block;text-align:center;color:var(--text-faint);font-size:12px;margin-top:6px;background:none;border:none;width:100%;padding:10px;cursor:pointer;text-decoration:underline;}
+.chart-wrap svg{display:block;}
+.foot-note{font-size:11px;color:var(--text-faint);text-align:center;margin-top:16px;}
 
-.overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:1000;overflow-y:auto;padding:20px 16px 60px;}
+/* ---------- overlay page ---------- */
+.overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:100;overflow-y:auto;}
 .overlay.active{display:block;}
-.overlay-close{background:var(--panel-alt);border:1px solid var(--line);color:var(--text);border-radius:7px;padding:9px 16px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:13px;margin-bottom:16px;cursor:pointer;}
+.overlay-bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(12,23,20,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+.overlay-title{font-size:16px;font-weight:800;}
+.overlay-body{max-width:520px;margin:0 auto;padding:14px 16px calc(40px + env(safe-area-inset-bottom));}
+.overlay .sec-title{display:none;}
+
+/* ---------- toast ---------- */
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:var(--surface-3);border:1px solid var(--line);color:var(--text);padding:11px 16px;border-radius:12px;font-size:13.5px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:200;max-width:90vw;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.45);}
+.toast.show{opacity:1;transform:translate(-50%,0);}
 </style>
 </head>
 <body>
 
 <div id="loginScreen">
+  <div class="logo-mark">أ</div>
   <h1>دفتر أسيا</h1>
   <p>سجل دخول بحساب Google حتى تنحفظ بياناتك دائم وتقدر تفتحها من أي جهاز.</p>
   <button class="google-btn" id="googleSignIn">
@@ -147,169 +202,278 @@ textarea{width:100%;min-height:100px;background:var(--panel-alt);border:1px soli
 </div>
 
 <div id="app">
+<div class="wrap">
+
+  <!-- top bar -->
   <div class="topbar">
     <div class="user-chip">
-      <img id="userPhoto" src="" alt="">
-      <span id="userName"></span>
+      <div class="avatar"><span id="userInitial">؟</span><img id="userPhoto" alt=""></div>
+      <div>
+        <div class="hello">أهلاً</div>
+        <div class="uname" id="userName"></div>
+      </div>
     </div>
     <div class="kebab-wrap">
-      <button class="kebab-btn" id="kebabBtn">⋮</button>
+      <button class="icon-btn" id="kebabBtn" aria-label="القائمة">⋮</button>
       <div class="kebab-menu" id="kebabMenu">
-        <button data-target="panel-monthly">📅 الربح الشهري</button>
-        <button data-target="panel-weekly">📆 الربح الأسبوعي</button>
-        <button data-target="panel-golden">🏆 أفضل 5 أيام</button>
-        <button data-target="panel-settle">💰 تعبئات يوسف</button>
-        <button data-target="panel-exp-ali-personal">🧾 مصاريف علي الشخصية</button>
-        <button data-target="panel-exp-ali-work">💼 مصاريف علي للشغل</button>
-        <button data-target="panel-exp-hussein-personal">🧾 مصاريف حسين الشخصية</button>
+        <div class="menu-label">التقارير</div>
+        <button class="menu-item" data-open="panel-monthly"><span class="ic">📅</span>الربح الشهري والسجل</button>
+        <button class="menu-item" data-open="panel-weekly"><span class="ic">📆</span>الربح الأسبوعي</button>
+        <button class="menu-item" data-open="panel-golden"><span class="ic">🏆</span>أفضل 5 أيام</button>
+        <div class="menu-sep"></div>
+        <div class="menu-label">يوسف</div>
+        <button class="menu-item" data-open="panel-settle"><span class="ic">💰</span>تعبئات يوسف</button>
+        <div class="menu-sep"></div>
+        <div class="menu-label">المصاريف</div>
+        <button class="menu-item" data-open="panel-exp-ali-personal"><span class="ic">🧾</span>مصاريف علي الشخصية</button>
+        <button class="menu-item" data-open="panel-exp-ali-work"><span class="ic">💼</span>مصاريف علي للشغل</button>
+        <button class="menu-item" data-open="panel-exp-hussein-personal"><span class="ic">🧾</span>مصاريف حسين الشخصية</button>
+        <div class="menu-sep"></div>
+        <button class="menu-item" data-open="panel-prices"><span class="ic">⚙️</span>الأسعار والنسبة</button>
+        <button class="menu-item" id="signOutBtn"><span class="ic">↩</span>تسجيل خروج</button>
       </div>
     </div>
-    <button class="signout-btn" id="signOutBtn">خروج</button>
   </div>
 
-  <header>
-    <p class="eyebrow">صافي الربح — الشهر المحدد</p>
-    <p class="hero-num num" id="heroProfit">$0.00</p>
-    <p class="hero-sub" id="heroSub">لا توجد عمليات بعد</p>
-    <p class="hero-avg num" id="heroAvg"></p>
-  </header>
-
-  <div class="month-picker">
-    <span class="lbl">عرض شهر:</span>
-    <input type="month" id="monthSelect">
+  <!-- month switcher -->
+  <div class="month-row">
+    <button class="icon-btn" id="prevMonth" aria-label="الشهر السابق">›</button>
+    <label class="month-label">
+      <span id="monthLabel">—</span><span class="caret">▾</span>
+      <input type="month" id="monthSelect">
+    </label>
+    <button class="icon-btn" id="nextMonth" aria-label="الشهر التالي">‹</button>
   </div>
 
-  <div class="panel">
-    <h2>الأسعار (لكل 10,000 أسيا)</h2>
-    <div class="rates">
-      <div class="rate-field"><label>سعر الشراء $</label><input type="number" step="0.01" id="buyRate" value="5.9"></div>
-      <div class="rate-field"><label>سعر البيع $</label><input type="number" step="0.01" id="sellRate" value="6.1"></div>
+  <!-- hero -->
+  <section class="hero">
+    <div class="hero-top">
+      <span class="eyebrow" id="heroEyebrow">ربحك</span>
+      <span class="badge" id="heroCount">لا توجد عمليات</span>
     </div>
-  </div>
-
-  <div class="panel">
-    <h2>لصق رسائل واتساب</h2>
-    <textarea id="pasteBox" placeholder="الصق نص الرسائل كما هي، حتى لو فيها [تاريخ ووقت] واسم المرسل، وحتى لو فيها غلط إملائي"></textarea>
-    <button class="btn btn-primary" id="parseBtn">تحليل وإضافة</button>
-  </div>
-
-  <div class="panel">
-    <h2>إضافة يدوية</h2>
-    <div class="quickrow">
-      <button class="btn btn-quick" id="addLiwa">+ لواء</button>
-      <button class="btn btn-quick" id="addFaris">+ فارس</button>
-      <button class="btn btn-quick" id="addFill">+ تعبئة</button>
+    <div class="hero-num num" id="heroProfit">$0.00</div>
+    <div class="hero-sub">+ <span class="num" id="heroCommission">$0.00</span> ربح النسبة <span class="muted" id="heroCommissionRule">(1$ لكل 100 ألف تعبئة)</span></div>
+    <div class="hero-total">المجموع: <span class="num" id="heroTotal">$0.00</span></div>
+    <div class="hero-stats">
+      <div><div class="k">السحب</div><div class="v num" id="heroSold">0</div></div>
+      <div><div class="k">التعبئة</div><div class="v num" id="heroFill">0</div></div>
+      <div><div class="k">الصافي</div><div class="v num" id="heroNet">0</div></div>
     </div>
+  </section>
+
+  <!-- quick tiles -->
+  <div class="tiles">
+    <button class="tile" data-open="panel-weekly">
+      <div class="k">هذا الأسبوع <span class="arrow">‹</span></div>
+      <div class="v num gold" id="weekTile">$0.00</div>
+      <div class="s" id="weekTileSub">+ $0.00 نسبة</div>
+    </button>
+    <button class="tile" data-open="panel-monthly">
+      <div class="k">متوسط يومي <span class="arrow">‹</span></div>
+      <div class="v num" id="avgTile">$0.00</div>
+      <div class="s" id="avgTileSub">—</div>
+    </button>
   </div>
 
-  <button class="btn btn-toggle" id="toggleDetailsBtn">إظهار كل التفاصيل</button>
+  <button class="rates-chip" data-open="panel-prices">
+    <span>شراء <b class="num" id="chipBuy">5.9</b></span><span class="dot">·</span>
+    <span>بيع <b class="num" id="chipSell">6.1</b></span><span class="dot">·</span>
+    <span>النسبة <b class="num" id="chipComm">1</b>$</span>
+    <span class="edit">تعديل</span>
+  </button>
 
-  <div id="detailsContainer">
-
-    <div id="panel-monthly">
-      <div class="panel">
-        <h2>الربح اليومي (الشهر المحدد)</h2>
-        <div class="chart-wrap" id="chartWrap"><div class="empty">لا توجد بيانات كافية للرسم</div></div>
+  <!-- input -->
+  <section class="card">
+    <div class="seg">
+      <button class="seg-btn active" data-seg="paste">لصق رسائل</button>
+      <button class="seg-btn" data-seg="manual">إضافة يدوية</button>
+    </div>
+    <div id="seg-paste">
+      <textarea id="pasteBox" placeholder="الصق رسائل الواتساب كما هي — حتى لو فيها [التاريخ والوقت] واسم المرسل أو أغلاط إملائية"></textarea>
+      <button class="btn btn-primary" id="parseBtn">تحليل وإضافة</button>
+    </div>
+    <div id="seg-manual" hidden>
+      <div class="quickrow">
+        <button class="btn btn-quick" id="addLiwa"><span class="big">+ لواء</span><span class="small num">52,387</span></button>
+        <button class="btn btn-quick" id="addFaris"><span class="big">+ فارس</span><span class="small num">15,707</span></button>
+        <button class="btn btn-quick" id="addFill"><span class="big">+ تعبئة</span><span class="small">مبلغ تكتبه</span></button>
       </div>
+      <p class="hint">الإضافة اليدوية تنسجل بتاريخ اليوم.</p>
+    </div>
+  </section>
 
-      <div class="panel">
-        <h2>الملخص — الشهر المحدد</h2>
+  <!-- recent -->
+  <section class="card">
+    <div class="card-head">
+      <h2>آخر العمليات</h2>
+      <button class="link-btn" data-open="panel-monthly">عرض الكل</button>
+    </div>
+    <div id="recentList"><div class="empty">لا توجد عمليات بهذا الشهر</div></div>
+  </section>
+
+  <button class="btn btn-ghost" id="toggleDetailsBtn">إظهار كل التفاصيل</button>
+
+  <!-- ===== detail sections (shown via ⋮ menu or "show all") ===== -->
+  <div id="detailsContainer" hidden>
+
+    <section id="panel-monthly" data-title="📅 الربح الشهري والسجل">
+      <h2 class="sec-title">📅 الربح الشهري والسجل</h2>
+
+      <div class="card">
+        <h2>الملخص — <span id="summaryMonth"></span></h2>
         <div class="stat-grid">
-          <div class="stat"><div class="label">إجمالي المبيعات (أسيا)</div><div class="value num" id="statSoldAsia">0</div></div>
-          <div class="stat"><div class="label">إجمالي التعبئة (أسيا)</div><div class="value num" id="statFillAsia">0</div></div>
-          <div class="stat"><div class="label">الرصيد المتبقي (أسيا)</div><div class="value num" id="statBalanceAsia">0</div></div>
-          <div class="stat"><div class="label">عدد العمليات</div><div class="value num" id="statCounts">0</div></div>
-          <div class="stat"><div class="label">التكلفة الكلية</div><div class="value num rose" id="statCost">$0.00</div></div>
-          <div class="stat"><div class="label">قيمة البيع الكلية</div><div class="value num" id="statRevenue">$0.00</div></div>
-          <div class="stat wide"><div class="label">الربح الصافي</div><div class="value num gold" id="statProfit" style="font-size:24px;">$0.00</div></div>
+          <div class="stat"><div class="label">السحب (أسيا)</div><div class="value num" id="statSoldAsia">0</div></div>
+          <div class="stat"><div class="label">التعبئة (أسيا)</div><div class="value num" id="statFillAsia">0</div></div>
+          <div class="stat"><div class="label">الصافي (أسيا)</div><div class="value num" id="statBalanceAsia">0</div></div>
+          <div class="stat"><div class="label">العمليات</div><div class="value" id="statCounts" style="font-size:14px;">0</div></div>
+          <div class="stat"><div class="label">التكلفة</div><div class="value num rose" id="statCost">$0.00</div></div>
+          <div class="stat"><div class="label">قيمة البيع</div><div class="value num" id="statRevenue">$0.00</div></div>
+          <div class="stat"><div class="label">الربح</div><div class="value num gold" id="statProfit">$0.00</div></div>
+          <div class="stat"><div class="label">ربح النسبة</div><div class="value num green" id="statCommission">$0.00</div></div>
+          <div class="stat wide"><div class="label">المجموع (الربح + النسبة)</div><div class="value num gold" id="statTotal" style="font-size:22px;">$0.00</div></div>
         </div>
       </div>
 
-      <div class="panel">
+      <div class="card">
+        <h2>المجموع اليومي (الربح + النسبة)</h2>
+        <div class="chart-wrap" id="chartWrap"><div class="empty">لا توجد بيانات كافية للرسم</div></div>
+      </div>
+
+      <div class="card">
         <h2>الأرباح حسب اليوم</h2>
         <div id="dailyList"><div class="empty">لا توجد عمليات مسجلة</div></div>
       </div>
 
-      <div class="panel">
+      <div class="card">
+        <h2>السجل الكامل</h2>
+        <div id="logList"><div class="empty">لا توجد عمليات مسجلة</div></div>
+      </div>
+
+      <div class="card">
         <h2>سجل تغييرات الأسعار</h2>
         <div id="rateHistoryList"><div class="empty">ما تغيرت الأسعار بعد</div></div>
       </div>
 
-      <div class="panel">
-        <h2>السجل الكامل — الشهر المحدد</h2>
-        <div id="logList"><div class="empty">لا توجد عمليات مسجلة</div></div>
-        <p class="sync-note">يتزامن تلقائي مع حسابك — يفتح بنفس البيانات من أي جهاز</p>
-      </div>
-
       <button class="reset-link" id="resetProfitsBtn">تصفير بيانات الأرباح فقط (كل الأشهر)</button>
-    </div>
+    </section>
 
-    <div class="panel" id="panel-weekly">
-      <h2>الربح الأسبوعي (هذا الأسبوع)</h2>
-      <div class="stat-grid">
-        <div class="stat"><div class="label">المبيعات (أسيا)</div><div class="value num" id="weekSold">0</div></div>
-        <div class="stat"><div class="label">التعبئة (أسيا)</div><div class="value num" id="weekFill">0</div></div>
-        <div class="stat wide"><div class="label">الربح</div><div class="value num gold" id="weekProfit" style="font-size:22px;">$0.00</div></div>
+    <section id="panel-weekly" data-title="📆 الربح الأسبوعي">
+      <h2 class="sec-title">📆 الربح الأسبوعي</h2>
+      <div class="card">
+        <h2>هذا الأسبوع <span class="muted num" id="weekRangeLabel"></span></h2>
+        <div class="stat-grid">
+          <div class="stat"><div class="label">السحب (أسيا)</div><div class="value num" id="weekSold">0</div></div>
+          <div class="stat"><div class="label">التعبئة (أسيا)</div><div class="value num" id="weekFill">0</div></div>
+          <div class="stat"><div class="label">الربح</div><div class="value num gold" id="weekProfit">$0.00</div></div>
+          <div class="stat"><div class="label">ربح النسبة</div><div class="value num green" id="weekCommission">$0.00</div></div>
+          <div class="stat wide"><div class="label">المجموع</div><div class="value num gold" id="weekTotal" style="font-size:22px;">$0.00</div></div>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="panel" id="panel-golden">
-      <h2>🏆 أفضل 5 أيام (كل الأوقات)</h2>
-      <div id="goldenList"><div class="empty">لا توجد بيانات كافية</div></div>
-    </div>
-
-    <div class="panel" id="panel-settle">
-      <h2>💰 تعبئات يوسف — تصفية</h2>
-      <button class="settle-all-btn" id="settleAllBtn">تصفية الكل بضغطة زر</button>
-      <p class="settle-total" id="settleTotal">لا توجد تعبئات غير مصفاة</p>
-      <div id="settleList"><div class="empty">لا توجد تعبئات مسجلة</div></div>
-    </div>
-
-    <div class="panel" id="panel-exp-ali-personal">
-      <h2>🧾 مصاريف علي الشخصية</h2>
-      <p class="exp-total" id="expTotal-ali-personal">الإجمالي: $0.00</p>
-      <div class="exp-row">
-        <input type="number" step="0.01" id="expAmount-ali-personal" placeholder="$">
-        <input type="text" id="expNote-ali-personal" placeholder="وصف (اختياري)">
+    <section id="panel-golden" data-title="🏆 أفضل 5 أيام">
+      <h2 class="sec-title">🏆 أفضل 5 أيام</h2>
+      <div class="card">
+        <h2>من كل الأوقات (حسب المجموع)</h2>
+        <div id="goldenList"><div class="empty">لا توجد بيانات كافية</div></div>
       </div>
-      <button class="btn btn-primary" id="expAddBtn-ali-personal">إضافة مصروف</button>
-      <div id="expList-ali-personal"><div class="empty">لا توجد مصاريف مسجلة</div></div>
+    </section>
+
+    <section id="panel-settle" data-title="💰 تعبئات يوسف">
+      <h2 class="sec-title">💰 تعبئات يوسف</h2>
+      <div class="card">
+        <p class="total-line" id="settleTotal">لا توجد تعبئات غير مصفاة</p>
+        <button class="btn btn-green" id="settleAllBtn">تصفية الكل بضغطة زر</button>
+        <div id="settleList"><div class="empty">لا توجد تعبئات مسجلة</div></div>
+        <p class="hint">التصفية تخفي التعبئة من هذه القائمة بس، وتبقى محسوبة بالأرباح والنسبة.</p>
+      </div>
+    </section>
+
+    <section id="panel-exp-ali-personal" data-title="🧾 مصاريف علي الشخصية">
+      <h2 class="sec-title">🧾 مصاريف علي الشخصية</h2>
+      <div class="card">
+        <p class="total-line" id="expTotal-ali-personal">الإجمالي: $0.00</p>
+        <div class="exp-row">
+          <input type="number" step="0.01" inputmode="decimal" id="expAmount-ali-personal" placeholder="$">
+          <input type="text" id="expNote-ali-personal" placeholder="وصف (اختياري)">
+        </div>
+        <button class="btn btn-primary" id="expAddBtn-ali-personal">إضافة مصروف</button>
+      </div>
+      <div class="card">
+        <div id="expList-ali-personal"><div class="empty">لا توجد مصاريف مسجلة</div></div>
+      </div>
       <button class="reset-link" id="resetExp-ali-personal">تصفير هذه القائمة</button>
-    </div>
+    </section>
 
-    <div class="panel" id="panel-exp-ali-work">
-      <h2>💼 مصاريف علي للشغل</h2>
-      <p class="exp-total" id="expTotal-ali-work">الإجمالي: $0.00</p>
-      <div class="exp-row">
-        <input type="number" step="0.01" id="expAmount-ali-work" placeholder="$">
-        <input type="text" id="expNote-ali-work" placeholder="وصف (اختياري)">
+    <section id="panel-exp-ali-work" data-title="💼 مصاريف علي للشغل">
+      <h2 class="sec-title">💼 مصاريف علي للشغل</h2>
+      <div class="card">
+        <p class="total-line" id="expTotal-ali-work">الإجمالي: $0.00</p>
+        <div class="exp-row">
+          <input type="number" step="0.01" inputmode="decimal" id="expAmount-ali-work" placeholder="$">
+          <input type="text" id="expNote-ali-work" placeholder="وصف (اختياري)">
+        </div>
+        <button class="btn btn-primary" id="expAddBtn-ali-work">إضافة مصروف</button>
       </div>
-      <button class="btn btn-primary" id="expAddBtn-ali-work">إضافة مصروف</button>
-      <div id="expList-ali-work"><div class="empty">لا توجد مصاريف مسجلة</div></div>
+      <div class="card">
+        <div id="expList-ali-work"><div class="empty">لا توجد مصاريف مسجلة</div></div>
+      </div>
       <button class="reset-link" id="resetExp-ali-work">تصفير هذه القائمة</button>
-    </div>
+    </section>
 
-    <div class="panel" id="panel-exp-hussein-personal">
-      <h2>🧾 مصاريف حسين الشخصية</h2>
-      <p class="exp-total" id="expTotal-hussein-personal">الإجمالي: $0.00</p>
-      <div class="exp-row">
-        <input type="number" step="0.01" id="expAmount-hussein-personal" placeholder="$">
-        <input type="text" id="expNote-hussein-personal" placeholder="وصف (اختياري)">
+    <section id="panel-exp-hussein-personal" data-title="🧾 مصاريف حسين الشخصية">
+      <h2 class="sec-title">🧾 مصاريف حسين الشخصية</h2>
+      <div class="card">
+        <p class="total-line" id="expTotal-hussein-personal">الإجمالي: $0.00</p>
+        <div class="exp-row">
+          <input type="number" step="0.01" inputmode="decimal" id="expAmount-hussein-personal" placeholder="$">
+          <input type="text" id="expNote-hussein-personal" placeholder="وصف (اختياري)">
+        </div>
+        <button class="btn btn-primary" id="expAddBtn-hussein-personal">إضافة مصروف</button>
       </div>
-      <button class="btn btn-primary" id="expAddBtn-hussein-personal">إضافة مصروف</button>
-      <div id="expList-hussein-personal"><div class="empty">لا توجد مصاريف مسجلة</div></div>
+      <div class="card">
+        <div id="expList-hussein-personal"><div class="empty">لا توجد مصاريف مسجلة</div></div>
+      </div>
       <button class="reset-link" id="resetExp-hussein-personal">تصفير هذه القائمة</button>
-    </div>
+    </section>
+
+    <section id="panel-prices" data-title="⚙️ الأسعار والنسبة">
+      <h2 class="sec-title">⚙️ الأسعار والنسبة</h2>
+      <div class="card">
+        <h2>الأسعار (لكل 10,000 أسيا)</h2>
+        <div class="fields">
+          <div class="field"><label>سعر الشراء $</label><input class="num" type="number" step="0.01" inputmode="decimal" id="buyRate" value="5.9"></div>
+          <div class="field"><label>سعر البيع $</label><input class="num" type="number" step="0.01" inputmode="decimal" id="sellRate" value="6.1"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>ربح النسبة من تعبئات يوسف</h2>
+        <div class="fields">
+          <div class="field"><label>$ لكل 100,000 أسيا تعبئة</label><input class="num" type="number" step="0.01" inputmode="decimal" id="commissionRate" value="1"></div>
+        </div>
+        <p class="hint">مثال: إذا 1$ — يوسف يعبي مليون أسيا = 10$ إلك.</p>
+      </div>
+      <button class="btn btn-primary" id="savePricesBtn">حفظ</button>
+    </section>
 
   </div>
 
   <button class="reset-link" id="resetBtn">تصفير كل شي (الأرباح + كل قوائم المصاريف)</button>
+  <p class="foot-note">يتزامن تلقائي مع حسابك — يفتح بنفس البيانات من أي جهاز</p>
+
+</div>
 </div>
 
+<!-- overlay page -->
 <div class="overlay" id="overlay">
-  <button class="overlay-close" id="overlayClose">✕ إغلاق</button>
-  <div id="overlayBody"></div>
+  <div class="overlay-bar">
+    <button class="icon-btn" id="overlayClose" aria-label="إغلاق">✕</button>
+    <div class="overlay-title" id="overlayTitle"></div>
+  </div>
+  <div class="overlay-body" id="overlayBody"></div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
@@ -338,17 +502,33 @@ const provider = new GoogleAuthProvider();
 
 const LIWA_ASIA = 52387;
 const FARIS_ASIA = 15707;
+const COMMISSION_UNIT = 100000; // النسبة تنحسب لكل 100,000 أسيا تعبئة
+const DEFAULT_RATES = { buy: 5.9, sell: 6.1, commission: 1 };
 const EXPENSE_LISTS = ['ali-personal', 'ali-work', 'hussein-personal'];
+const MONTHS_AR = ['كانون الثاني','شباط','آذار','نيسان','أيار','حزيران','تموز','آب','أيلول','تشرين الأول','تشرين الثاني','كانون الأول'];
 
 let currentUid = null;
 let entries = [];
 let rateHistory = [];
 let expenses = [];
-let rates = { buy: 5.9, sell: 6.1 };
+let rates = { ...DEFAULT_RATES };
 let unsubEntries = null;
 let unsubRateHistory = null;
 let unsubExpenses = null;
 let selectedMonth = null;
+
+const $ = (id) => document.getElementById(id);
+function setText(id, v){ const el = $(id); if(el) el.textContent = v; }
+function esc(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+let toastTimer = null;
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), 2800);
+}
 
 // ---------- date helpers ----------
 function pad2(n){ return String(n).padStart(2,'0'); }
@@ -378,18 +558,20 @@ function displayOfEntry(e){
   return '';
 }
 function currentMonthKey(){ const d = new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`; }
+function monthName(key){ const m = Number(key.split('-')[1]); return MONTHS_AR[m-1] || ''; }
+function monthLabelOf(key){ return `${monthName(key)} ${key.split('-')[0]}`; }
 function currentWeekRange(){
   const now = new Date();
   const day = now.getDay();
   const start = new Date(now); start.setDate(now.getDate()-day); start.setHours(0,0,0,0);
   const end = new Date(start); end.setDate(start.getDate()+6); end.setHours(23,59,59,999);
-  return { startIso: isoFromDate(start), endIso: isoFromDate(end) };
+  return { startIso: isoFromDate(start), endIso: isoFromDate(end), start, end };
 }
 
 // ---------- parsing ----------
 const ARABIC_DIGITS = '٠١٢٣٤٥٦٧٨٩';
 function toWesternDigits(s){ return s.replace(/[٠-٩]/g, d => String(ARABIC_DIGITS.indexOf(d))); }
-function stripControlChars(s){ return s.replace(/[\u200E\u200F\u202A-\u202E]/g, ''); }
+function stripControlChars(s){ return s.replace(/[‎‏‪-‮]/g, ''); }
 function stripMeta(s){ const m = s.match(/^\[.*?\]\s*[^:]*:\s*(.*)$/); return m ? m[1] : s; }
 function normalize(s){ return toWesternDigits(stripControlChars(s)).replace(/[أإآ]/g,'ا'); }
 function extractDateInfo(rawLine){
@@ -413,13 +595,13 @@ function levenshtein(a, b){
   return dp[a.length][b.length];
 }
 function wordMatches(token, target, maxDist){
-  token = token.replace(/[^\u0600-\u06FF]/g,'');
+  token = token.replace(/[^؀-ۿ]/g,'');
   if(!token) return false;
   return levenshtein(token, target) <= maxDist;
 }
 function findKeyword(bodyWords, target, maxDist){ return bodyWords.some(w => wordMatches(w, target, maxDist)); }
 function fmtNum(n){ return Math.round(n).toLocaleString('en-US'); }
-function fmtMoney(n){ return '$' + n.toFixed(2); }
+function fmtMoney(n){ return (n < 0 ? '-$' : '$') + Math.abs(n).toFixed(2); }
 
 function parseMessages(text){
   const lines = text.split('\n').map(l=>l.trim()).filter(Boolean);
@@ -468,114 +650,198 @@ function parseMessages(text){
   return added;
 }
 
+// ---------- money math ----------
+// الربح = (مجموع السحب − مجموع التعبئة) ÷ 10,000 × (سعر البيع − سعر الشراء)
+function dayProfit(sold, fill, buy, sell){
+  const net = sold - fill;
+  return (net/10000)*sell - (net/10000)*buy;
+}
+// ربح النسبة = مجموع التعبئة ÷ 100,000 × النسبة
+function commissionOf(fill, comm){ return (fill / COMMISSION_UNIT) * comm; }
+
+function computeTotals(list, buy, sell, comm){
+  const sold = list.filter(e=>e.type==='sale');
+  const fills = list.filter(e=>e.type==='fill');
+  const soldAsia = sold.reduce((s,e)=>s+e.asia,0);
+  const fillAsia = fills.reduce((s,e)=>s+e.asia,0);
+  const netAsia = soldAsia - fillAsia;
+  const cost = (netAsia/10000)*buy;
+  const revenue = (netAsia/10000)*sell;
+  const profit = revenue - cost;
+  const commission = commissionOf(fillAsia, comm);
+  return {
+    soldAsia, fillAsia, balance: netAsia,
+    liwaCount: Math.round(sold.filter(e=>e.category==='لواء').reduce((s,e)=>s+e.asia,0) / LIWA_ASIA),
+    farisCount: Math.round(sold.filter(e=>e.category==='فارس').reduce((s,e)=>s+e.asia,0) / FARIS_ASIA),
+    customCount: sold.filter(e=>e.category==='مخصص').length,
+    cost, revenue, profit, commission, total: profit + commission
+  };
+}
+
 // ---------- auth ----------
-document.getElementById('googleSignIn').addEventListener('click', () => {
+$('googleSignIn').addEventListener('click', () => {
   signInWithPopup(auth, provider).catch(err => alert('تعذر تسجيل الدخول: ' + err.message));
 });
-document.getElementById('signOutBtn').addEventListener('click', () => signOut(auth));
+$('signOutBtn').addEventListener('click', () => signOut(auth));
 
 onAuthStateChanged(auth, async (user) => {
   if(user){
     currentUid = user.uid;
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    document.getElementById('userName').textContent = user.displayName || user.email || '';
-    document.getElementById('userPhoto').src = user.photoURL || '';
+    $('loginScreen').style.display = 'none';
+    $('app').style.display = 'block';
+    const shownName = user.displayName || user.email || '';
+    setText('userName', shownName);
+    setText('userInitial', (shownName.trim()[0] || '؟').toUpperCase());
+    const photo = $('userPhoto');
+    photo.onerror = () => { photo.hidden = true; };
+    if(user.photoURL){ photo.hidden = false; photo.src = user.photoURL; } else { photo.hidden = true; }
     selectedMonth = currentMonthKey();
-    document.getElementById('monthSelect').value = selectedMonth;
+    $('monthSelect').value = selectedMonth;
     await loadRates();
     subscribeEntries();
     subscribeRateHistory();
     subscribeExpenses();
+    render();
   } else {
     currentUid = null;
     if(unsubEntries) unsubEntries();
     if(unsubRateHistory) unsubRateHistory();
     if(unsubExpenses) unsubExpenses();
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('app').style.display = 'none';
+    $('loginScreen').style.display = 'flex';
+    $('app').style.display = 'none';
   }
 });
 
-document.getElementById('monthSelect').addEventListener('change', (e)=>{
-  selectedMonth = e.target.value || currentMonthKey();
+// ---------- month switcher ----------
+function setMonth(key){
+  selectedMonth = key || currentMonthKey();
+  $('monthSelect').value = selectedMonth;
   render();
+}
+function shiftMonth(delta){
+  const [y, m] = selectedMonth.split('-').map(Number);
+  const d = new Date(y, m-1+delta, 1);
+  setMonth(`${d.getFullYear()}-${pad2(d.getMonth()+1)}`);
+}
+$('monthSelect').addEventListener('change', (e)=> setMonth(e.target.value));
+$('prevMonth').addEventListener('click', ()=> shiftMonth(-1));
+$('nextMonth').addEventListener('click', ()=> shiftMonth(1));
+
+// ---------- menu + overlay pages ----------
+const kebabMenu = $('kebabMenu');
+$('kebabBtn').addEventListener('click', (e)=>{
+  e.stopPropagation();
+  kebabMenu.classList.toggle('open');
 });
 
-// ---------- kebab menu + overlay ----------
-document.getElementById('kebabBtn').addEventListener('click', ()=>{
-  document.getElementById('kebabMenu').classList.toggle('open');
-});
 document.addEventListener('click', (e)=>{
-  const wrap = document.querySelector('.kebab-wrap');
-  if(wrap && !wrap.contains(e.target)){
-    document.getElementById('kebabMenu').classList.remove('open');
+  const opener = e.target.closest('[data-open]');
+  if(opener){
+    e.preventDefault();
+    openOverlay(opener.getAttribute('data-open'));
+    return;
   }
+  const wrap = document.querySelector('.kebab-wrap');
+  if(wrap && !wrap.contains(e.target)) kebabMenu.classList.remove('open');
 });
 
 let overlayOrigin = null;
-function openOverlay(targetId){
-  const el = document.getElementById(targetId);
-  if(!el) return;
-  overlayOrigin = { parent: el.parentNode, next: el.nextSibling };
-  document.getElementById('overlayBody').appendChild(el);
-  document.getElementById('overlay').classList.add('active');
-  document.getElementById('kebabMenu').classList.remove('open');
-  window.scrollTo(0,0);
-}
-function closeOverlay(){
-  const body = document.getElementById('overlayBody');
-  const el = body.firstElementChild;
+let overlayPushed = false;
+function restoreOverlayContent(){
+  const el = $('overlayBody').firstElementChild;
   if(el && overlayOrigin){
-    if(overlayOrigin.next) overlayOrigin.parent.insertBefore(el, overlayOrigin.next);
-    else overlayOrigin.parent.appendChild(el);
+    const { parent, next } = overlayOrigin;
+    if(next && next.parentNode === parent) parent.insertBefore(el, next);
+    else parent.appendChild(el);
   }
-  document.getElementById('overlay').classList.remove('active');
   overlayOrigin = null;
 }
-document.querySelectorAll('.kebab-menu button').forEach(btn=>{
-  btn.addEventListener('click', ()=> openOverlay(btn.getAttribute('data-target')));
+function openOverlay(id){
+  const el = $(id);
+  if(!el) return;
+  const ov = $('overlay');
+  const wasActive = ov.classList.contains('active');
+  if(wasActive) restoreOverlayContent();
+  overlayOrigin = { parent: el.parentNode, next: el.nextSibling };
+  setText('overlayTitle', el.dataset.title || '');
+  $('overlayBody').appendChild(el);
+  ov.classList.add('active');
+  ov.scrollTop = 0;
+  document.body.classList.add('no-scroll');
+  kebabMenu.classList.remove('open');
+  if(!wasActive){ history.pushState({ overlay: true }, ''); overlayPushed = true; }
+}
+function doCloseOverlay(){
+  restoreOverlayContent();
+  $('overlay').classList.remove('active');
+  document.body.classList.remove('no-scroll');
+}
+function closeOverlay(){
+  if(overlayPushed){ overlayPushed = false; history.back(); }
+  else doCloseOverlay();
+}
+window.addEventListener('popstate', ()=>{
+  if($('overlay').classList.contains('active')){ overlayPushed = false; doCloseOverlay(); }
 });
-document.getElementById('overlayClose').addEventListener('click', closeOverlay);
+$('overlayClose').addEventListener('click', closeOverlay);
 
 let detailsShown = false;
-document.getElementById('toggleDetailsBtn').addEventListener('click', ()=>{
+$('toggleDetailsBtn').addEventListener('click', ()=>{
   detailsShown = !detailsShown;
-  document.getElementById('detailsContainer').style.display = detailsShown ? 'block' : 'none';
-  document.getElementById('toggleDetailsBtn').textContent = detailsShown ? 'إخفاء كل التفاصيل' : 'إظهار كل التفاصيل';
+  $('detailsContainer').hidden = !detailsShown;
+  $('toggleDetailsBtn').textContent = detailsShown ? 'إخفاء كل التفاصيل' : 'إظهار كل التفاصيل';
+});
+
+// input segments
+document.querySelectorAll('.seg-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.seg-btn').forEach(b=> b.classList.toggle('active', b === btn));
+    $('seg-paste').hidden = btn.dataset.seg !== 'paste';
+    $('seg-manual').hidden = btn.dataset.seg !== 'manual';
+  });
 });
 
 // ---------- firestore data ----------
+function fillRateInputs(){
+  $('buyRate').value = rates.buy;
+  $('sellRate').value = rates.sell;
+  $('commissionRate').value = rates.commission;
+}
 async function loadRates(){
   try{
     const ref = doc(db, 'users', currentUid, 'settings', 'rates');
     const snap = await getDoc(ref);
     if(snap.exists()){
-      rates = snap.data();
+      rates = { ...DEFAULT_RATES, ...snap.data() };
     } else {
       await setDoc(ref, rates);
     }
   }catch(err){ console.error(err); }
-  document.getElementById('buyRate').value = rates.buy;
-  document.getElementById('sellRate').value = rates.sell;
+  fillRateInputs();
 }
 
 async function saveRates(){
-  const newBuy = parseFloat(document.getElementById('buyRate').value) || 0;
-  const newSell = parseFloat(document.getElementById('sellRate').value) || 0;
-  const changed = (newBuy !== rates.buy) || (newSell !== rates.sell);
-  rates.buy = newBuy;
-  rates.sell = newSell;
+  const newBuy = parseFloat($('buyRate').value);
+  const newSell = parseFloat($('sellRate').value);
+  const newComm = parseFloat($('commissionRate').value);
+  const next = {
+    buy: isNaN(newBuy) ? rates.buy : newBuy,
+    sell: isNaN(newSell) ? rates.sell : newSell,
+    commission: isNaN(newComm) ? rates.commission : newComm
+  };
+  const changed = next.buy !== rates.buy || next.sell !== rates.sell || next.commission !== rates.commission;
+  rates = next;
+  render();
+  if(!changed) return false;
   try{
     await setDoc(doc(db, 'users', currentUid, 'settings', 'rates'), rates);
-    if(changed){
-      const info = todayDateInfo();
-      await addDoc(collection(db, 'users', currentUid, 'rateHistory'), {
-        buy:newBuy, sell:newSell, date:info.display, isoDate:info.iso, ts:Date.now()
-      });
-    }
-  }catch(err){ console.error(err); }
-  render();
+    const info = todayDateInfo();
+    await addDoc(collection(db, 'users', currentUid, 'rateHistory'), {
+      buy: rates.buy, sell: rates.sell, commission: rates.commission,
+      date: info.display, isoDate: info.iso, ts: Date.now()
+    });
+  }catch(err){ console.error(err); toast('تعذر حفظ الأسعار، تأكد من الاتصال'); }
+  return true;
 }
 
 function subscribeEntries(){
@@ -585,7 +851,6 @@ function subscribeEntries(){
     render();
   });
 }
-
 function subscribeRateHistory(){
   const q = query(collection(db, 'users', currentUid, 'rateHistory'), orderBy('ts', 'desc'));
   unsubRateHistory = onSnapshot(q, (snapshot) => {
@@ -593,7 +858,6 @@ function subscribeRateHistory(){
     render();
   });
 }
-
 function subscribeExpenses(){
   const q = query(collection(db, 'users', currentUid, 'expenses'), orderBy('ts', 'desc'));
   unsubExpenses = onSnapshot(q, (snapshot) => {
@@ -602,11 +866,36 @@ function subscribeExpenses(){
   });
 }
 
+async function addEntry(entry){
+  try{
+    await addDoc(collection(db, 'users', currentUid, 'entries'), { ...entry, ts: Date.now() });
+    return true;
+  }catch(err){ console.error(err); toast('تعذرت الإضافة، تأكد من الاتصال بالإنترنت'); return false; }
+}
+async function deleteEntry(id){
+  try{ await deleteDoc(doc(db, 'users', currentUid, 'entries', id)); }
+  catch(err){ console.error(err); }
+}
+async function markSettled(id){
+  try{ await updateDoc(doc(db, 'users', currentUid, 'entries', id), { settled: true }); }
+  catch(err){ console.error(err); }
+}
+async function settleAll(){
+  const unsettled = entries.filter(e=>e.type==='fill' && !e.settled);
+  if(unsettled.length === 0) return;
+  try{
+    const batch = writeBatch(db);
+    unsettled.forEach(e => batch.update(doc(db, 'users', currentUid, 'entries', e.id), { settled: true }));
+    await batch.commit();
+    toast(`تمت تصفية ${unsettled.length} تعبئة`);
+  }catch(err){ console.error(err); }
+}
+
 async function addExpense(listId){
-  const amountInput = document.getElementById(`expAmount-${listId}`);
-  const noteInput = document.getElementById(`expNote-${listId}`);
+  const amountInput = $(`expAmount-${listId}`);
+  const noteInput = $(`expNote-${listId}`);
   const amount = parseFloat(amountInput.value);
-  if(!amount || amount <= 0) return;
+  if(!amount || amount <= 0){ toast('اكتب مبلغ صحيح'); return; }
   const note = noteInput.value.trim();
   const info = todayDateInfo();
   try{
@@ -615,41 +904,12 @@ async function addExpense(listId){
     });
     amountInput.value = '';
     noteInput.value = '';
-  }catch(err){ console.error(err); }
+    toast('انضاف المصروف');
+  }catch(err){ console.error(err); toast('تعذرت الإضافة'); }
 }
-
 async function deleteExpense(id){
-  try{
-    await deleteDoc(doc(db, 'users', currentUid, 'expenses', id));
-  }catch(err){ console.error(err); }
-}
-
-async function addEntry(entry){
-  try{
-    await addDoc(collection(db, 'users', currentUid, 'entries'), { ...entry, ts: Date.now() });
-  }catch(err){ console.error(err); alert('تعذرت الإضافة، تأكد من الاتصال بالإنترنت.'); }
-}
-
-async function deleteEntry(id){
-  try{
-    await deleteDoc(doc(db, 'users', currentUid, 'entries', id));
-  }catch(err){ console.error(err); }
-}
-
-async function toggleSettled(id){
-  try{
-    await updateDoc(doc(db, 'users', currentUid, 'entries', id), { settled: true });
-  }catch(err){ console.error(err); }
-}
-
-async function settleAll(){
-  const unsettled = entries.filter(e=>e.type==='fill' && !e.settled);
-  if(unsettled.length === 0) return;
-  try{
-    const batch = writeBatch(db);
-    unsettled.forEach(e => batch.update(doc(db, 'users', currentUid, 'entries', e.id), { settled: true }));
-    await batch.commit();
-  }catch(err){ console.error(err); }
+  try{ await deleteDoc(doc(db, 'users', currentUid, 'expenses', id)); }
+  catch(err){ console.error(err); }
 }
 
 async function deleteCollection(path){
@@ -658,18 +918,15 @@ async function deleteCollection(path){
   snap.docs.forEach(d => batch.delete(d.ref));
   await batch.commit();
 }
-
 async function resetAll(){
   await deleteCollection('entries');
   await deleteCollection('rateHistory');
   await deleteCollection('expenses');
 }
-
 async function resetEntries(){
   await deleteCollection('entries');
   await deleteCollection('rateHistory');
 }
-
 async function resetExpenseList(listId){
   const list = expenses.filter(e=>e.listId===listId);
   if(list.length === 0) return;
@@ -680,63 +937,78 @@ async function resetExpenseList(listId){
   }catch(err){ console.error(err); }
 }
 
-// ---------- stats ----------
-function computeTotals(list, buy, sell){
-  const sold = list.filter(e=>e.type==='sale');
-  const fills = list.filter(e=>e.type==='fill');
-  const soldAsia = sold.reduce((s,e)=>s+e.asia,0);
-  const fillAsia = fills.reduce((s,e)=>s+e.asia,0);
-  const netAsia = soldAsia - fillAsia;
-  const cost = (netAsia/10000)*buy;
-  const revenue = (netAsia/10000)*sell;
-  return {
-    soldAsia, fillAsia, balance: netAsia,
-    liwaCount: sold.filter(e=>e.category==='لواء').length,
-    farisCount: sold.filter(e=>e.category==='فارس').length,
-    customCount: sold.filter(e=>e.category==='مخصص').length,
-    cost, revenue, profit: revenue-cost
-  };
-}
-
-function dayProfit(sold, fill, buy, sell){
-  const net = sold - fill;
-  const cost = (net/10000)*buy;
-  const revenue = (net/10000)*sell;
-  return revenue - cost;
-}
-
-function buildChart(profits){
-  const w = 320, h = 140, pad = 24;
-  const max = Math.max(...profits, 0);
-  const min = Math.min(...profits, 0);
+// ---------- chart ----------
+function buildChart(values, labels){
+  const w = 320, h = 150, padX = 14, padTop = 16, padBottom = 22;
+  const max = Math.max(...values, 0);
+  const min = Math.min(...values, 0);
   const range = (max - min) || 1;
-  const stepX = (w - 2*pad) / Math.max(profits.length - 1, 1);
-  const points = profits.map((p,i)=>{
-    const x = pad + i*stepX;
-    const y = h - pad - ((p - min)/range)*(h - 2*pad);
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(' ');
-  const zeroY = h - pad - ((0 - min)/range)*(h - 2*pad);
-  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:140px;">
-    <line x1="${pad}" y1="${zeroY.toFixed(1)}" x2="${w-pad}" y2="${zeroY.toFixed(1)}" stroke="#28382F" stroke-width="1"/>
-    <polyline points="${points}" fill="none" stroke="#D4AF37" stroke-width="2"/>
+  const stepX = (w - 2*padX) / Math.max(values.length - 1, 1);
+  const yOf = (v) => padTop + (1 - (v - min)/range) * (h - padTop - padBottom);
+  const pts = values.map((v,i)=> [padX + i*stepX, yOf(v)]);
+  const line = pts.map(p=>`${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ');
+  const zeroY = yOf(0);
+  const area = `${padX},${zeroY.toFixed(1)} ${line} ${(padX + (values.length-1)*stepX).toFixed(1)},${zeroY.toFixed(1)}`;
+  const dots = pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.6" fill="#D4AF37"/>`).join('');
+  const first = labels[0] || '', last = labels[labels.length-1] || '';
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:150px;" direction="ltr">
+    <polygon points="${area}" fill="rgba(212,175,55,.10)"/>
+    <line x1="${padX}" y1="${zeroY.toFixed(1)}" x2="${w-padX}" y2="${zeroY.toFixed(1)}" stroke="#24352E" stroke-width="1"/>
+    <polyline points="${line}" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots}
+    <text x="${padX}" y="${h-6}" fill="#62786E" font-size="10" font-family="JetBrains Mono">${esc(first)}</text>
+    <text x="${w-padX}" y="${h-6}" fill="#62786E" font-size="10" font-family="JetBrains Mono" text-anchor="end">${esc(last)}</text>
+    <text x="${w-padX}" y="11" fill="#62786E" font-size="10" font-family="JetBrains Mono" text-anchor="end">${fmtMoney(max)}</text>
   </svg>`;
 }
 
 // ---------- render ----------
+function entryRow(e, withDelete){
+  const isSale = e.type === 'sale';
+  const label = isSale ? e.category : 'تعبئة';
+  const sign = isSale ? '−' : '+';
+  return `<div class="row">
+    <div class="row-main">
+      <div class="row-title"><span class="tag ${isSale ? 'sale' : 'fill'}">${esc(label)}</span><span class="num muted" style="font-size:12px;">${esc(displayOfEntry(e))}</span></div>
+      <div class="row-meta">${esc((e.raw||'').slice(0,40))}</div>
+    </div>
+    <div class="row-end">
+      <span class="amt num ${isSale ? 'sale' : 'fill'}">${sign}${fmtNum(e.asia)}</span>
+      ${withDelete ? `<button class="del-btn" data-del="${e.id}" aria-label="حذف">✕</button>` : ''}
+    </div>
+  </div>`;
+}
+
 function render(){
-  if(!entries) return;
-  const buy = parseFloat(document.getElementById('buyRate').value) || 0;
-  const sell = parseFloat(document.getElementById('sellRate').value) || 0;
+  if(!selectedMonth) return;
+  const buy = Number(rates.buy) || 0;
+  const sell = Number(rates.sell) || 0;
+  const comm = Number(rates.commission) || 0;
+
+  // chips + labels
+  setText('chipBuy', buy);
+  setText('chipSell', sell);
+  setText('chipComm', comm);
+  setText('heroCommissionRule', `(${comm}$ لكل 100 ألف تعبئة)`);
+  setText('monthLabel', monthLabelOf(selectedMonth));
+  setText('summaryMonth', monthName(selectedMonth));
 
   const monthEntries = entries.filter(e => monthKeyOf(isoOfEntry(e)) === selectedMonth);
-  const t = computeTotals(monthEntries, buy, sell);
+  const t = computeTotals(monthEntries, buy, sell, comm);
 
-  document.getElementById('heroProfit').textContent = fmtMoney(t.profit);
-  document.getElementById('heroSub').textContent = monthEntries.length
-    ? `${t.liwaCount} لواء و ${t.farisCount} فارس${t.customCount ? ' و '+t.customCount+' مخصص' : ''} · رصيد ${fmtNum(t.balance)} أسيا`
-    : 'لا توجد عمليات بهذا الشهر';
+  // hero
+  setText('heroEyebrow', `ربحك — ${monthName(selectedMonth)}`);
+  setText('heroCount', monthEntries.length
+    ? `${t.liwaCount} لواء · ${t.farisCount} فارس${t.customCount ? ' · '+t.customCount+' مخصص' : ''}`
+    : 'لا توجد عمليات');
+  setText('heroProfit', fmtMoney(t.profit));
+  setText('heroCommission', fmtMoney(t.commission));
+  setText('heroTotal', fmtMoney(t.total));
+  setText('heroSold', fmtNum(t.soldAsia));
+  setText('heroFill', fmtNum(t.fillAsia));
+  setText('heroNet', fmtNum(t.balance));
 
+  // daily grouping (selected month)
   const dailyMap = {};
   monthEntries.forEach(e=>{
     const iso = isoOfEntry(e);
@@ -746,57 +1018,83 @@ function render(){
   });
   const dailyKeysAsc = Object.keys(dailyMap).filter(Boolean).sort();
   const dailyKeysDesc = [...dailyKeysAsc].reverse();
-
   const activeDays = dailyKeysAsc.length;
-  document.getElementById('heroAvg').textContent = activeDays
-    ? `متوسط الربح اليومي: ${fmtMoney(t.profit/activeDays)} (${activeDays} يوم عمل)`
-    : '';
 
-  const { startIso, endIso } = currentWeekRange();
-  const weekEntries = entries.filter(e => { const iso = isoOfEntry(e); return iso >= startIso && iso <= endIso; });
-  const wt = computeTotals(weekEntries, buy, sell);
-  document.getElementById('weekProfit').textContent = fmtMoney(wt.profit);
-  document.getElementById('weekSold').textContent = fmtNum(wt.soldAsia);
-  document.getElementById('weekFill').textContent = fmtNum(wt.fillAsia);
+  setText('avgTile', activeDays ? fmtMoney(t.profit/activeDays) : '$0.00');
+  setText('avgTileSub', activeDays ? `${activeDays} يوم عمل` : '—');
 
-  const chartWrap = document.getElementById('chartWrap');
+  // week
+  const wr = currentWeekRange();
+  const weekEntries = entries.filter(e => { const iso = isoOfEntry(e); return iso >= wr.startIso && iso <= wr.endIso; });
+  const wt = computeTotals(weekEntries, buy, sell, comm);
+  setText('weekTile', fmtMoney(wt.profit));
+  setText('weekTileSub', `+ ${fmtMoney(wt.commission)} نسبة`);
+  setText('weekProfit', fmtMoney(wt.profit));
+  setText('weekCommission', fmtMoney(wt.commission));
+  setText('weekTotal', fmtMoney(wt.total));
+  setText('weekSold', fmtNum(wt.soldAsia));
+  setText('weekFill', fmtNum(wt.fillAsia));
+  setText('weekRangeLabel', `(${wr.start.getDate()}/${wr.start.getMonth()+1} – ${wr.end.getDate()}/${wr.end.getMonth()+1})`);
+
+  // summary grid
+  setText('statSoldAsia', fmtNum(t.soldAsia));
+  setText('statFillAsia', fmtNum(t.fillAsia));
+  setText('statBalanceAsia', fmtNum(t.balance));
+  setText('statCounts', `${t.liwaCount} لواء / ${t.farisCount} فارس` + (t.customCount ? ` / ${t.customCount} مخصص` : ''));
+  setText('statCost', fmtMoney(t.cost));
+  setText('statRevenue', fmtMoney(t.revenue));
+  setText('statProfit', fmtMoney(t.profit));
+  setText('statCommission', fmtMoney(t.commission));
+  setText('statTotal', fmtMoney(t.total));
+
+  // chart (daily total = profit + commission)
+  const chartWrap = $('chartWrap');
   if(dailyKeysAsc.length < 2){
-    chartWrap.innerHTML = '<div class="empty">لا توجد بيانات كافية للرسم (يحتاج يومين على الأقل)</div>';
+    chartWrap.innerHTML = '<div class="empty">يحتاج يومين على الأقل حتى يطلع الرسم</div>';
   } else {
-    const dayProfits = dailyKeysAsc.map(iso=>{
-      const day = dailyMap[iso];
-      return dayProfit(day.sold, day.fill, buy, sell);
+    const vals = dailyKeysAsc.map(iso=>{
+      const d = dailyMap[iso];
+      return dayProfit(d.sold, d.fill, buy, sell) + commissionOf(d.fill, comm);
     });
-    chartWrap.innerHTML = buildChart(dayProfits);
+    chartWrap.innerHTML = buildChart(vals, dailyKeysAsc.map(iso=> dailyMap[iso].display));
   }
 
-  document.getElementById('statSoldAsia').textContent = fmtNum(t.soldAsia);
-  document.getElementById('statFillAsia').textContent = fmtNum(t.fillAsia);
-  document.getElementById('statBalanceAsia').textContent = fmtNum(t.balance);
-  document.getElementById('statCounts').textContent = `${t.liwaCount} لواء / ${t.farisCount} فارس` + (t.customCount ? ` / ${t.customCount} مخصص` : '');
-  document.getElementById('statCost').textContent = fmtMoney(t.cost);
-  document.getElementById('statRevenue').textContent = fmtMoney(t.revenue);
-  document.getElementById('statProfit').textContent = fmtMoney(t.profit);
-
-  const dailyList = document.getElementById('dailyList');
+  // daily list
+  const dailyList = $('dailyList');
   if(dailyKeysDesc.length === 0){
     dailyList.innerHTML = '<div class="empty">لا توجد عمليات مسجلة</div>';
   } else {
     dailyList.innerHTML = dailyKeysDesc.map(iso=>{
-      const day = dailyMap[iso];
-      const dProfit = dayProfit(day.sold, day.fill, buy, sell);
-      const netChange = day.sold - day.fill;
-      const arrow = netChange > 0 ? '<span class="arrow-up">▲</span>' : (netChange < 0 ? '<span class="arrow-down">▼</span>' : '—');
-      return `<div class="log-item">
-        <div>
-          <div class="num">${day.display}</div>
-          <div class="log-meta">مبيعات ${fmtNum(day.sold)} · تعبئة ${fmtNum(day.fill)} · تحرك الميزان ${arrow} ${fmtNum(Math.abs(netChange))}</div>
+      const d = dailyMap[iso];
+      const p = dayProfit(d.sold, d.fill, buy, sell);
+      const c = commissionOf(d.fill, comm);
+      const net = d.sold - d.fill;
+      const arrow = net > 0 ? '<span class="arrow-up">▲</span>' : (net < 0 ? '<span class="arrow-down">▼</span>' : '—');
+      return `<div class="row">
+        <div class="row-main">
+          <div class="row-title num">${esc(d.display)}</div>
+          <div class="row-meta">سحب ${fmtNum(d.sold)} · تعبئة ${fmtNum(d.fill)} · ${arrow} ${fmtNum(Math.abs(net))}</div>
         </div>
-        <div class="log-amt num gold">${fmtMoney(dProfit)}</div>
+        <div class="row-end" style="flex-direction:column;align-items:flex-end;gap:0;">
+          <span class="amt num gold">${fmtMoney(p)}</span>
+          <span class="amt-sub num">+${fmtMoney(c)}</span>
+        </div>
       </div>`;
     }).join('');
   }
 
+  // recent (home)
+  const recent = monthEntries.slice(0, 6);
+  $('recentList').innerHTML = recent.length
+    ? recent.map(e => entryRow(e, false)).join('')
+    : '<div class="empty">لا توجد عمليات بهذا الشهر</div>';
+
+  // full log (selected month)
+  $('logList').innerHTML = monthEntries.length
+    ? monthEntries.map(e => entryRow(e, true)).join('')
+    : '<div class="empty">لا توجد عمليات مسجلة بهذا الشهر</div>';
+
+  // golden days (all-time, by total)
   const allDailyMap = {};
   entries.forEach(e=>{
     const iso = isoOfEntry(e);
@@ -806,103 +1104,87 @@ function render(){
     else allDailyMap[iso].fill += e.asia;
   });
   const goldenDays = Object.keys(allDailyMap).map(iso=>{
-    const day = allDailyMap[iso];
-    return { display: day.display, profit: dayProfit(day.sold, day.fill, buy, sell) };
-  }).sort((a,b)=>b.profit-a.profit).slice(0,5);
-  const goldenList = document.getElementById('goldenList');
-  if(goldenDays.length === 0){
-    goldenList.innerHTML = '<div class="empty">لا توجد بيانات كافية</div>';
-  } else {
-    goldenList.innerHTML = goldenDays.map((d,i)=>`<div class="log-item">
-      <div>${i+1}. <span class="num">${d.display}</span></div>
-      <div class="log-amt num gold">${fmtMoney(d.profit)}</div>
-    </div>`).join('');
-  }
+    const d = allDailyMap[iso];
+    const p = dayProfit(d.sold, d.fill, buy, sell);
+    const c = commissionOf(d.fill, comm);
+    return { display: d.display, iso, profit: p, commission: c, total: p + c };
+  }).sort((a,b)=>b.total-a.total).slice(0,5);
+  $('goldenList').innerHTML = goldenDays.length
+    ? goldenDays.map((d,i)=>`<div class="row">
+        <div class="row-main" style="display:flex;align-items:center;gap:10px;">
+          <span class="rank">${i+1}</span>
+          <div>
+            <div class="row-title num">${esc(d.display)} <span class="muted" style="font-size:11px;">${d.iso.slice(0,4)}</span></div>
+            <div class="row-meta">ربح ${fmtMoney(d.profit)} + نسبة ${fmtMoney(d.commission)}</div>
+          </div>
+        </div>
+        <span class="amt num gold">${fmtMoney(d.total)}</span>
+      </div>`).join('')
+    : '<div class="empty">لا توجد بيانات كافية</div>';
 
-  const rhList = document.getElementById('rateHistoryList');
-  if(rateHistory.length === 0){
-    rhList.innerHTML = '<div class="empty">ما تغيرت الأسعار بعد</div>';
-  } else {
-    rhList.innerHTML = rateHistory.map(r=>`<div class="log-item">
-      <div class="num">${r.date || ''}</div>
-      <div class="num">شراء ${r.buy} / بيع ${r.sell}</div>
-    </div>`).join('');
-  }
+  // rate history
+  $('rateHistoryList').innerHTML = rateHistory.length
+    ? rateHistory.map(r=>`<div class="row">
+        <div class="row-title num">${esc(r.date || '')}</div>
+        <div class="row-meta" style="white-space:normal;">شراء <span class="num">${r.buy}</span> · بيع <span class="num">${r.sell}</span>${r.commission !== undefined ? ` · نسبة <span class="num">${r.commission}</span>$` : ''}</div>
+      </div>`).join('')
+    : '<div class="empty">ما تغيرت الأسعار بعد</div>';
 
-  const fills = entries.filter(e=>e.type==='fill');
-  const unsettledFills = fills.filter(e=>!e.settled);
-  const unsettledTotal = unsettledFills.reduce((s,e)=>s+e.asia,0);
-  document.getElementById('settleTotal').textContent = unsettledTotal > 0
-    ? `غير مصفى: ${fmtNum(unsettledTotal)} أسيا`
-    : 'لا توجد تعبئات غير مصفاة';
-  document.getElementById('settleAllBtn').style.display = unsettledTotal > 0 ? 'block' : 'none';
+  // yousef fills (unsettled only)
+  const unsettled = entries.filter(e=>e.type==='fill' && !e.settled);
+  const unsettledTotal = unsettled.reduce((s,e)=>s+e.asia,0);
+  $('settleTotal').innerHTML = unsettledTotal > 0
+    ? `غير مصفى: <b class="num">${fmtNum(unsettledTotal)}</b> أسيا · نسبتها <b class="num green">${fmtMoney(commissionOf(unsettledTotal, comm))}</b>`
+    : 'كل التعبئات مصفاة ✅';
+  $('settleAllBtn').hidden = unsettled.length === 0;
+  $('settleList').innerHTML = unsettled.length
+    ? unsettled.map(e=>`<div class="row">
+        <div class="row-main">
+          <div class="row-title"><span class="num">${fmtNum(e.asia)}</span> أسيا</div>
+          <div class="row-meta">${esc(displayOfEntry(e))} — ${esc((e.raw||'').slice(0,30))}</div>
+        </div>
+        <button class="small-btn" data-settle="${e.id}">تصفية</button>
+      </div>`).join('')
+    : '<div class="empty">لا توجد تعبئات غير مصفاة</div>';
 
-  const settleList = document.getElementById('settleList');
-  if(unsettledFills.length === 0){
-    settleList.innerHTML = '<div class="empty">لا توجد تعبئات غير مصفاة</div>';
-  } else {
-    settleList.innerHTML = unsettledFills.map(e=>`<div class="settle-item">
-      <div>
-        <div class="num">${fmtNum(e.asia)} أسيا</div>
-        <div class="log-meta">${displayOfEntry(e)} — ${(e.raw||'').slice(0,30)}</div>
-      </div>
-      <button class="settle-btn" data-id="${e.id}">تصفية</button>
-    </div>`).join('');
-    settleList.querySelectorAll('.settle-btn').forEach(btn=>{
-      btn.addEventListener('click', ()=> toggleSettled(btn.getAttribute('data-id')));
-    });
-  }
-
+  // expenses
   EXPENSE_LISTS.forEach(listId=>{
     const list = expenses.filter(e=>e.listId===listId);
-    const total = list.reduce((s,e)=>s+e.amount,0);
-    document.getElementById(`expTotal-${listId}`).textContent = `الإجمالي: ${fmtMoney(total)}`;
-    const listEl = document.getElementById(`expList-${listId}`);
-    if(list.length === 0){
-      listEl.innerHTML = '<div class="empty">لا توجد مصاريف مسجلة</div>';
-    } else {
-      listEl.innerHTML = list.map(e=>`<div class="log-item">
-        <div>
-          <div class="num">${fmtMoney(e.amount)}</div>
-          <div class="log-meta">${e.date || ''}${e.note ? ' — '+e.note : ''}</div>
-        </div>
-        <button class="del-btn" data-id="${e.id}">حذف</button>
-      </div>`).join('');
-      listEl.querySelectorAll('.del-btn').forEach(btn=>{
-        btn.addEventListener('click', ()=> deleteExpense(btn.getAttribute('data-id')));
-      });
-    }
+    const total = list.reduce((s,e)=>s+(Number(e.amount)||0),0);
+    $(`expTotal-${listId}`).innerHTML = `الإجمالي: <b class="num">${fmtMoney(total)}</b>`;
+    $(`expList-${listId}`).innerHTML = list.length
+      ? list.map(e=>`<div class="row">
+          <div class="row-main">
+            <div class="row-title num">${fmtMoney(Number(e.amount)||0)}</div>
+            <div class="row-meta">${esc(e.date || '')}${e.note ? ' — ' + esc(e.note) : ''}</div>
+          </div>
+          <button class="del-btn" data-del-exp="${e.id}" aria-label="حذف">✕</button>
+        </div>`).join('')
+      : '<div class="empty">لا توجد مصاريف مسجلة</div>';
   });
-
-  const logList = document.getElementById('logList');
-  if(monthEntries.length === 0){
-    logList.innerHTML = '<div class="empty">لا توجد عمليات مسجلة بهذا الشهر</div>';
-  } else {
-    logList.innerHTML = monthEntries.map(e=>{
-      const label = e.type==='sale' ? e.category : 'تعبئة';
-      const sign = e.type==='sale' ? '−' : '+';
-      const cls = e.type==='sale' ? 'sale' : 'fill';
-      return `<div class="log-item">
-        <div>
-          <div>${label} <span class="log-meta">${displayOfEntry(e)}</span></div>
-          <div class="log-meta">${(e.raw||'').slice(0,40)}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div class="log-amt num ${cls}">${sign}${fmtNum(e.asia)}</div>
-          <button class="del-btn" data-id="${e.id}">حذف</button>
-        </div>
-      </div>`;
-    }).join('');
-    logList.querySelectorAll('.del-btn').forEach(btn=>{
-      btn.addEventListener('click', ()=> deleteEntry(btn.getAttribute('data-id')));
-    });
-  }
 }
 
-document.getElementById('parseBtn').addEventListener('click', async ()=>{
-  const box = document.getElementById('pasteBox');
+// delegated row actions (delete / settle)
+document.addEventListener('click', (e)=>{
+  const del = e.target.closest('[data-del]');
+  if(del){
+    if(confirm('تحذف هذه العملية؟')) deleteEntry(del.getAttribute('data-del'));
+    return;
+  }
+  const delExp = e.target.closest('[data-del-exp]');
+  if(delExp){
+    if(confirm('تحذف هذا المصروف؟')) deleteExpense(delExp.getAttribute('data-del-exp'));
+    return;
+  }
+  const settle = e.target.closest('[data-settle]');
+  if(settle){ markSettled(settle.getAttribute('data-settle')); }
+});
+
+// ---------- input actions ----------
+$('parseBtn').addEventListener('click', async ()=>{
+  const box = $('pasteBox');
   const parsed = parseMessages(box.value);
-  if(parsed.length === 0) return;
+  if(parsed.length === 0){ toast('ما لقيت أي عملية مفهومة بالنص'); return; }
 
   const existingSourceLines = new Set(entries.filter(e=>e.sourceLine).map(e=>e.sourceLine));
   const seenInBatch = new Set();
@@ -910,62 +1192,68 @@ document.getElementById('parseBtn').addEventListener('click', async ()=>{
   let skipped = 0;
   for(const entry of parsed){
     const key = entry.sourceLine;
-    if(key && (existingSourceLines.has(key) || seenInBatch.has(key))){
-      skipped++;
-      continue;
-    }
+    if(key && (existingSourceLines.has(key) || seenInBatch.has(key))){ skipped++; continue; }
     if(key) seenInBatch.add(key);
     toAdd.push(entry);
   }
 
   box.value = '';
-  for(const entry of toAdd) await addEntry(entry);
-  if(skipped > 0){
-    alert(`تمت إضافة ${toAdd.length} عملية. تجاهلت ${skipped} رسالة مكررة (موجودة أصلاً).`);
-  }
+  let ok = 0;
+  for(const entry of toAdd){ if(await addEntry(entry)) ok++; }
+  toast(skipped > 0
+    ? `انضافت ${ok} عملية · تجاهلت ${skipped} مكررة`
+    : `انضافت ${ok} عملية`);
 });
 
-document.getElementById('addLiwa').addEventListener('click', ()=>{
+$('addLiwa').addEventListener('click', async ()=>{
   const info = todayDateInfo();
-  addEntry({type:'sale', category:'لواء', asia:LIWA_ASIA, raw:'إضافة يدوية', date:info.display, isoDate:info.iso});
+  if(await addEntry({type:'sale', category:'لواء', asia:LIWA_ASIA, raw:'إضافة يدوية', date:info.display, isoDate:info.iso})) toast('انضاف لواء');
 });
-document.getElementById('addFaris').addEventListener('click', ()=>{
+$('addFaris').addEventListener('click', async ()=>{
   const info = todayDateInfo();
-  addEntry({type:'sale', category:'فارس', asia:FARIS_ASIA, raw:'إضافة يدوية', date:info.display, isoDate:info.iso});
+  if(await addEntry({type:'sale', category:'فارس', asia:FARIS_ASIA, raw:'إضافة يدوية', date:info.display, isoDate:info.iso})) toast('انضاف فارس');
 });
-document.getElementById('addFill').addEventListener('click', ()=>{
-  const val = prompt('كم عبيت؟ (مثلا 20 يعني 20,000)');
+$('addFill').addEventListener('click', async ()=>{
+  const val = prompt('كم عبيت؟ (مثلاً 20 يعني 20,000)');
   if(val === null) return;
-  let asia = parseInt(val.replace(/[.,]/g,''), 10);
-  if(isNaN(asia)) return;
-  if(asia < 1000 && !val.includes('.') && !val.includes(',')) asia *= 1000;
+  const clean = toWesternDigits(val.trim());
+  let asia = parseInt(clean.replace(/[.,]/g,''), 10);
+  if(isNaN(asia) || asia <= 0){ toast('رقم غير صحيح'); return; }
+  if(asia < 1000 && !clean.includes('.') && !clean.includes(',')) asia *= 1000;
   const info = todayDateInfo();
-  addEntry({type:'fill', category:null, asia, raw:'تعبئة يدوية: '+val, date:info.display, isoDate:info.iso, settled:false});
+  if(await addEntry({type:'fill', category:null, asia, raw:'تعبئة يدوية: '+clean, date:info.display, isoDate:info.iso, settled:false})) toast(`انضافت تعبئة ${fmtNum(asia)}`);
 });
 
-document.getElementById('buyRate').addEventListener('change', saveRates);
-document.getElementById('sellRate').addEventListener('change', saveRates);
+$('buyRate').addEventListener('change', saveRates);
+$('sellRate').addEventListener('change', saveRates);
+$('commissionRate').addEventListener('change', saveRates);
+$('savePricesBtn').addEventListener('click', async ()=>{
+  await saveRates();
+  toast('تم حفظ الأسعار');
+});
 
-document.getElementById('settleAllBtn').addEventListener('click', settleAll);
+$('settleAllBtn').addEventListener('click', settleAll);
 
 EXPENSE_LISTS.forEach(listId=>{
-  document.getElementById(`expAddBtn-${listId}`).addEventListener('click', ()=> addExpense(listId));
-  document.getElementById(`resetExp-${listId}`).addEventListener('click', async ()=>{
+  $(`expAddBtn-${listId}`).addEventListener('click', ()=> addExpense(listId));
+  $(`resetExp-${listId}`).addEventListener('click', async ()=>{
     if(confirm('متأكد تريد تصفير هذه القائمة؟ هذا الإجراء لا يمكن التراجع عنه.')){
       await resetExpenseList(listId);
+      toast('تم تصفير القائمة');
     }
   });
 });
 
-document.getElementById('resetProfitsBtn').addEventListener('click', async ()=>{
+$('resetProfitsBtn').addEventListener('click', async ()=>{
   if(confirm('متأكد تريد تصفير بيانات الأرباح (المبيعات والتعبئات) من كل الأشهر؟ هذا الإجراء لا يمكن التراجع عنه.')){
     await resetEntries();
+    toast('تم تصفير الأرباح');
   }
 });
-
-document.getElementById('resetBtn').addEventListener('click', async ()=>{
+$('resetBtn').addEventListener('click', async ()=>{
   if(confirm('متأكد تريد تصفير كل شي — الأرباح وكل قوائم المصاريف من كل الأشهر؟ هذا الإجراء لا يمكن التراجع عنه.')){
     await resetAll();
+    toast('تم تصفير كل شي');
   }
 });
 </script>
