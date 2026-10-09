@@ -604,6 +604,7 @@ dialog.sheet::backdrop{background:var(--color-scrim);-webkit-backdrop-filter:blu
         <div class="field"><label for="commissionRate">كم دولار لكل 100,000 أسيا تعبئة</label><input class="num" type="number" step="0.01" min="0" inputmode="decimal" id="commissionRate" value="1" aria-describedby="commHint"></div>
         <p class="hint" id="commHint">مثال: إذا 1$ — يوسف يعبي مليون أسيا = 10$ إلك.</p>
       </div>
+      <p class="hint" style="margin-top:0;">تغيير السعر ينطبق على العمليات الجديدة بس — العمليات المسجلة قبل تبقى بسعرها اللي انسجلت بيه.</p>
       <button class="btn btn-primary btn-block" id="savePricesBtn">حفظ</button>
     </section>
 
@@ -937,24 +938,41 @@ function parseFillAmount(val){
 }
 
 // ---------- money math ----------
-// الربح = (مجموع السحب − مجموع التعبئة) ÷ 10,000 × (سعر البيع − سعر الشراء)
-function dayProfit(sold, fill, buy, sell){
-  const net = sold - fill;
-  return (net/10000)*sell - (net/10000)*buy;
+// كل عملية تنحسب بالسعر اللي كان وقت تسجيلها:
+//  - العمليات الجديدة تنحفظ وياها الأسعار (buy / sell / commission)
+//  - العمليات القديمة (قبل هذي الميزة) تاخذ السعر من سجل تغييرات الأسعار حسب وقتها
+// الربح = (السحب − التعبئة) ÷ 10,000 × (سعر البيع − سعر الشراء)، لكل عملية بسعرها
+// ربح النسبة = التعبئة ÷ 100,000 × النسبة، لكل تعبئة بنسبتها
+let historyAsc = [];
+function ratesAt(ts){
+  let r = null;
+  for(const h of historyAsc){ if(h.ts <= ts) r = h; else break; }
+  return { buy: DEFAULT_RATES.buy, sell: DEFAULT_RATES.sell, commission: DEFAULT_RATES.commission, ...(r || {}) };
 }
-// ربح النسبة = مجموع التعبئة ÷ 100,000 × النسبة
-function commissionOf(fill, comm){ return (fill / COMMISSION_UNIT) * comm; }
+function ratesOf(e){
+  if(typeof e.buy === 'number' && typeof e.sell === 'number'){
+    return { buy: e.buy, sell: e.sell, commission: typeof e.commission === 'number' ? e.commission : DEFAULT_RATES.commission };
+  }
+  const r = ratesAt(e.ts || 0);
+  return { buy: Number(r.buy) || 0, sell: Number(r.sell) || 0, commission: r.commission === undefined ? DEFAULT_RATES.commission : Number(r.commission) || 0 };
+}
+// sale → +, fill → − (تنطرح من السحب)
+function signedAsia(e){ return e.type === 'sale' ? e.asia : -e.asia; }
+function entryCost(e){ return signedAsia(e)/10000 * ratesOf(e).buy; }
+function entryRevenue(e){ return signedAsia(e)/10000 * ratesOf(e).sell; }
+function entryProfit(e){ const r = ratesOf(e); return signedAsia(e)/10000 * (r.sell - r.buy); }
+function entryCommission(e){ return e.type === 'fill' ? (e.asia / COMMISSION_UNIT) * ratesOf(e).commission : 0; }
 
-function computeTotals(list, buy, sell, comm){
+function computeTotals(list){
   const sold = list.filter(e=>e.type==='sale');
   const fills = list.filter(e=>e.type==='fill');
   const soldAsia = sold.reduce((s,e)=>s+e.asia,0);
   const fillAsia = fills.reduce((s,e)=>s+e.asia,0);
   const netAsia = soldAsia - fillAsia;
-  const cost = (netAsia/10000)*buy;
-  const revenue = (netAsia/10000)*sell;
+  const cost = list.reduce((s,e)=>s+entryCost(e),0);
+  const revenue = list.reduce((s,e)=>s+entryRevenue(e),0);
   const profit = revenue - cost;
-  const commission = commissionOf(fillAsia, comm);
+  const commission = list.reduce((s,e)=>s+entryCommission(e),0);
   return {
     soldAsia, fillAsia, balance: netAsia,
     liwaCount: Math.round(sold.filter(e=>e.category==='لواء').reduce((s,e)=>s+e.asia,0) / LIWA_ASIA),
@@ -1261,6 +1279,7 @@ function subscribeRateHistory(){
   const q = query(collection(db, 'users', currentUid, 'rateHistory'), orderBy('ts', 'desc'));
   unsubRateHistory = onSnapshot(q, (snapshot) => {
     rateHistory = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    historyAsc = [...rateHistory].filter(h => typeof h.ts === 'number').sort((a,b)=>a.ts-b.ts);
     render();
   });
 }
@@ -1274,7 +1293,8 @@ function subscribeExpenses(){
 
 async function addEntry(entry){
   try{
-    await addDoc(collection(db, 'users', currentUid, 'entries'), { ...entry, ts: Date.now() });
+    const priced = { buy: Number(rates.buy) || 0, sell: Number(rates.sell) || 0, commission: Number(rates.commission) || 0, ...entry, ts: Date.now() };
+    await addDoc(collection(db, 'users', currentUid, 'entries'), priced);
     return true;
   }catch(err){ console.error(err); toast('تعذرت الإضافة، تأكد من الاتصال بالإنترنت'); return false; }
 }
@@ -1411,7 +1431,7 @@ function render(){
   setText('summaryMonth', monthName(selectedMonth));
 
   const monthEntries = entries.filter(e => monthKeyOf(isoOfEntry(e)) === selectedMonth);
-  const t = computeTotals(monthEntries, buy, sell, comm);
+  const t = computeTotals(monthEntries);
 
   // hero
   const hero = $('hero');
@@ -1432,9 +1452,11 @@ function render(){
   const dailyMap = {};
   monthEntries.forEach(e=>{
     const iso = isoOfEntry(e);
-    if(!dailyMap[iso]) dailyMap[iso] = { sold:0, fill:0, display: displayOfEntry(e) };
+    if(!dailyMap[iso]) dailyMap[iso] = { sold:0, fill:0, profit:0, commission:0, display: displayOfEntry(e) };
     if(e.type==='sale') dailyMap[iso].sold += e.asia;
     else dailyMap[iso].fill += e.asia;
+    dailyMap[iso].profit += entryProfit(e);
+    dailyMap[iso].commission += entryCommission(e);
   });
   const dailyKeysAsc = Object.keys(dailyMap).filter(Boolean).sort();
   const dailyKeysDesc = [...dailyKeysAsc].reverse();
@@ -1446,7 +1468,7 @@ function render(){
   // week
   const wr = currentWeekRange();
   const weekEntries = entries.filter(e => { const iso = isoOfEntry(e); return iso >= wr.startIso && iso <= wr.endIso; });
-  const wt = computeTotals(weekEntries, buy, sell, comm);
+  const wt = computeTotals(weekEntries);
   setMoney('weekTile', wt.profit);
   setText('weekTileSub', `+ ${fmtMoney(wt.commission)} نسبة`);
   setMoney('weekProfit', wt.profit);
@@ -1474,7 +1496,7 @@ function render(){
   } else {
     const vals = dailyKeysAsc.map(iso=>{
       const d = dailyMap[iso];
-      return dayProfit(d.sold, d.fill, buy, sell) + commissionOf(d.fill, comm);
+      return d.profit + d.commission;
     });
     chartWrap.innerHTML = buildChart(vals, dailyKeysAsc.map(iso=> dailyMap[iso].display));
   }
@@ -1483,8 +1505,8 @@ function render(){
   $('dailyList').innerHTML = dailyKeysDesc.length
     ? `<ul class="rows">${dailyKeysDesc.map(iso=>{
         const d = dailyMap[iso];
-        const p = dayProfit(d.sold, d.fill, buy, sell);
-        const c = commissionOf(d.fill, comm);
+        const p = d.profit;
+        const c = d.commission;
         return `<li>
           <div class="row-main">
             <span class="row-title num">${esc(d.display)}</span>
@@ -1518,14 +1540,14 @@ function render(){
   entries.forEach(e=>{
     const iso = isoOfEntry(e);
     if(!iso) return;
-    if(!allDailyMap[iso]) allDailyMap[iso] = { sold:0, fill:0, display: displayOfEntry(e) };
-    if(e.type==='sale') allDailyMap[iso].sold += e.asia;
-    else allDailyMap[iso].fill += e.asia;
+    if(!allDailyMap[iso]) allDailyMap[iso] = { profit:0, commission:0, display: displayOfEntry(e) };
+    allDailyMap[iso].profit += entryProfit(e);
+    allDailyMap[iso].commission += entryCommission(e);
   });
   const goldenDays = Object.keys(allDailyMap).map(iso=>{
     const d = allDailyMap[iso];
-    const p = dayProfit(d.sold, d.fill, buy, sell);
-    const c = commissionOf(d.fill, comm);
+    const p = d.profit;
+    const c = d.commission;
     return { display: d.display, iso, profit: p, commission: c, total: p + c };
   }).sort((a,b)=>b.total-a.total).slice(0,5);
   $('goldenList').innerHTML = goldenDays.length
@@ -1553,7 +1575,7 @@ function render(){
   const unsettled = entries.filter(e=>e.type==='fill' && !e.settled);
   const unsettledTotal = unsettled.reduce((s,e)=>s+e.asia,0);
   $('settleTotal').innerHTML = unsettledTotal > 0
-    ? `غير مصفى: <b class="num">${fmtNum(unsettledTotal)}</b> أسيا · نسبتها <b class="num info">${fmtMoney(commissionOf(unsettledTotal, comm))}</b>`
+    ? `غير مصفى: <b class="num">${fmtNum(unsettledTotal)}</b> أسيا · نسبتها <b class="num info">${fmtMoney(unsettled.reduce((s,e)=>s+entryCommission(e),0))}</b>`
     : 'كل التعبئات مصفاة.';
   $('settleAllBtn').hidden = unsettled.length === 0;
   $('settleList').innerHTML = unsettled.length
