@@ -177,6 +177,7 @@ body[data-state="app"] #app{display:block;}
 .hero-line.small{font-size:var(--text-sm);color:var(--color-muted-foreground);}
 .hero-line.small .icon{color:var(--color-info);}
 .hero-line.small dd{font-weight:600;color:var(--color-info);}
+.hero-line.partner-line .icon,.hero-line.partner-line dd{color:var(--color-muted-foreground);}
 .hero-line .rule{font-size:var(--text-xs);}
 .hero-line.total dt{font-weight:600;}
 .hero-line.total dd{font-size:var(--text-lg);font-weight:700;}
@@ -232,7 +233,7 @@ body[data-state="app"] #app{display:block;}
 .field{display:grid;gap:var(--space-1);min-width:0;}
 .field label,.field-label{font-size:var(--text-sm);font-weight:500;color:var(--color-foreground);display:block;}
 .field-label{margin-bottom:var(--space-1);}
-input[type="text"],input[type="number"],textarea{width:100%;min-height:48px;background:var(--color-muted);border:1px solid var(--color-input-border);border-radius:var(--radius-md);padding:var(--space-3);color:var(--color-foreground);}
+input[type="text"],input[type="number"],input[type="date"],textarea{width:100%;min-height:48px;background:var(--color-muted);border:1px solid var(--color-input-border);border-radius:var(--radius-md);padding:var(--space-3);color:var(--color-foreground);}
 textarea{min-height:128px;resize:vertical;line-height:1.6;}
 input::placeholder,textarea::placeholder{color:var(--color-muted-foreground);opacity:1;}
 input:focus-visible,textarea:focus-visible{outline:2px solid var(--color-ring);outline-offset:1px;}
@@ -368,6 +369,7 @@ dialog.sheet::backdrop{background:var(--color-scrim);-webkit-backdrop-filter:blu
 <symbol id="i-trending-up" viewBox="0 0 24 24"><path d="M16 7h6v6" /><path d="m22 7-8.5 8.5-5-5L2 17" /></symbol>
 <symbol id="i-triangle-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" /></symbol>
 <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2" /><path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2" /><path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3" /><path d="M4 22h16" /><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z" /><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3" /></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
 <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" /><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" /></symbol>
 <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></symbol>
 </svg>
@@ -436,6 +438,10 @@ dialog.sheet::backdrop{background:var(--color-scrim);-webkit-backdrop-filter:blu
         </div>
         <p class="hero-num num" id="heroProfit">$0.00</p>
         <dl class="hero-lines">
+          <div class="hero-line small partner-line" id="heroPartnerRow">
+            <dt><svg class="icon icon-sm" aria-hidden="true"><use href="#i-users"/></svg>حصة الشريك <span class="rule" id="heroPartnerRule">(35% من ربح البيع)</span></dt>
+            <dd class="num" id="heroPartner">−$0.00</dd>
+          </div>
           <div class="hero-line small">
             <dt><svg class="icon icon-sm" aria-hidden="true"><use href="#i-coins"/></svg>ربح النسبة <span class="rule" id="heroCommissionRule">(1$ لكل 100 ألف تعبئة)</span></dt>
             <dd class="num" id="heroCommission">+$0.00</dd>
@@ -470,6 +476,7 @@ dialog.sheet::backdrop{background:var(--color-scrim);-webkit-backdrop-filter:blu
         <span>شراء <b class="num" id="chipBuy">5.9</b></span>
         <span>بيع <b class="num" id="chipSell">6.1</b></span>
         <span>النسبة <b class="num" id="chipComm">1</b>$</span>
+        <span>الشريك <b class="num" id="chipPartner">35</b>%</span>
         <span class="edit"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-pencil"/></svg>تعديل</span>
       </button>
     </div>
@@ -527,7 +534,9 @@ dialog.sheet::backdrop{background:var(--color-scrim);-webkit-backdrop-filter:blu
           <div class="stat"><dt>العمليات</dt><dd id="statCounts" style="font-size:var(--text-sm);">0</dd></div>
           <div class="stat"><dt>التكلفة</dt><dd class="num" id="statCost">$0.00</dd></div>
           <div class="stat"><dt>قيمة البيع</dt><dd class="num" id="statRevenue">$0.00</dd></div>
-          <div class="stat"><dt>الربح</dt><dd class="num accent" id="statProfit">$0.00</dd></div>
+          <div class="stat"><dt>ربح البيع الكلي</dt><dd class="num" id="statGross">$0.00</dd></div>
+          <div class="stat"><dt>حصة الشريك</dt><dd class="num" id="statPartner">$0.00</dd></div>
+          <div class="stat"><dt>ربحك</dt><dd class="num accent" id="statProfit">$0.00</dd></div>
           <div class="stat"><dt>ربح النسبة</dt><dd class="num info" id="statCommission">$0.00</dd></div>
           <div class="stat wide"><dt>المجموع (الربح + النسبة)</dt><dd class="num" id="statTotal">$0.00</dd></div>
         </dl>
@@ -563,7 +572,8 @@ dialog.sheet::backdrop{background:var(--color-scrim);-webkit-backdrop-filter:blu
         <dl class="stat-grid">
           <div class="stat"><dt>السحب (أسيا)</dt><dd class="num" id="weekSold">0</dd></div>
           <div class="stat"><dt>التعبئة (أسيا)</dt><dd class="num" id="weekFill">0</dd></div>
-          <div class="stat"><dt>الربح</dt><dd class="num accent" id="weekProfit">$0.00</dd></div>
+          <div class="stat"><dt>حصة الشريك</dt><dd class="num" id="weekPartner">$0.00</dd></div>
+          <div class="stat"><dt>ربحك</dt><dd class="num accent" id="weekProfit">$0.00</dd></div>
           <div class="stat"><dt>ربح النسبة</dt><dd class="num info" id="weekCommission">$0.00</dd></div>
           <div class="stat wide"><dt>المجموع</dt><dd class="num" id="weekTotal">$0.00</dd></div>
         </dl>
@@ -603,6 +613,14 @@ dialog.sheet::backdrop{background:var(--color-scrim);-webkit-backdrop-filter:blu
         <h3 class="card-title">ربح النسبة من تعبئات يوسف</h3>
         <div class="field"><label for="commissionRate">كم دولار لكل 100,000 أسيا تعبئة</label><input class="num" type="number" step="0.01" min="0" inputmode="decimal" id="commissionRate" value="1" aria-describedby="commHint"></div>
         <p class="hint" id="commHint">مثال: إذا 1$ — يوسف يعبي مليون أسيا = 10$ إلك.</p>
+      </div>
+      <div class="card">
+        <h3 class="card-title">الشريك</h3>
+        <div class="fields">
+          <div class="field"><label for="partnerPct">نسبته من ربح البيع (%)</label><input class="num" type="number" step="1" min="0" max="100" inputmode="decimal" id="partnerPct" value="35" aria-describedby="partnerHint"></div>
+          <div class="field"><label for="partnerFrom">تبدي من تاريخ</label><input type="date" id="partnerFrom" value="2026-11-01" aria-describedby="partnerHint"></div>
+        </div>
+        <p class="hint" id="partnerHint">تنطرح من ربح البيع بس، وربح النسبة من يوسف يبقى إلك كامل. العمليات قبل هذا التاريخ ما تتأثر. خليها 0% إذا ماكو شريك.</p>
       </div>
       <p class="hint" style="margin-top:0;">تغيير السعر ينطبق على العمليات الجديدة بس — العمليات المسجلة قبل تبقى بسعرها اللي انسجلت بيه.</p>
       <button class="btn btn-primary btn-block" id="savePricesBtn">حفظ</button>
@@ -715,6 +733,7 @@ const LIWA_ASIA = 52387;
 const FARIS_ASIA = 15707;
 const COMMISSION_UNIT = 100000; // النسبة تنحسب لكل 100,000 أسيا تعبئة
 const DEFAULT_RATES = { buy: 5.9, sell: 6.1, commission: 1 };
+const DEFAULT_PARTNER = { partnerPct: 35, partnerFrom: '2026-11-01' };
 const EXPENSE_META = {
   'ali-personal':     { title: 'مصاريف علي الشخصية',  icon: 'receipt' },
   'ali-work':         { title: 'مصاريف علي للشغل',    icon: 'briefcase-business' },
@@ -730,6 +749,7 @@ let entries = [];
 let rateHistory = [];
 let expenses = [];
 let rates = { ...DEFAULT_RATES };
+let partner = { ...DEFAULT_PARTNER };
 let unsubEntries = null;
 let unsubRateHistory = null;
 let unsubExpenses = null;
@@ -961,6 +981,13 @@ function signedAsia(e){ return e.type === 'sale' ? e.asia : -e.asia; }
 function entryCost(e){ return signedAsia(e)/10000 * ratesOf(e).buy; }
 function entryRevenue(e){ return signedAsia(e)/10000 * ratesOf(e).sell; }
 function entryProfit(e){ const r = ratesOf(e); return signedAsia(e)/10000 * (r.sell - r.buy); }
+// حصة الشريك: نسبة من ربح البيع بس (مو من ربح النسبة)، على العمليات من تاريخ بدايته
+function partnerPct(){ const p = Number(partner.partnerPct); return isNaN(p) ? 0 : p; }
+function entryPartnerCut(e){
+  if(!partner.partnerFrom || isoOfEntry(e) < partner.partnerFrom) return 0;
+  return entryProfit(e) * partnerPct() / 100;
+}
+function entryMyProfit(e){ return entryProfit(e) - entryPartnerCut(e); }
 function entryCommission(e){ return e.type === 'fill' ? (e.asia / COMMISSION_UNIT) * ratesOf(e).commission : 0; }
 
 function computeTotals(list){
@@ -971,14 +998,16 @@ function computeTotals(list){
   const netAsia = soldAsia - fillAsia;
   const cost = list.reduce((s,e)=>s+entryCost(e),0);
   const revenue = list.reduce((s,e)=>s+entryRevenue(e),0);
-  const profit = revenue - cost;
+  const grossProfit = revenue - cost;
+  const partnerCut = list.reduce((s,e)=>s+entryPartnerCut(e),0);
+  const profit = grossProfit - partnerCut;
   const commission = list.reduce((s,e)=>s+entryCommission(e),0);
   return {
     soldAsia, fillAsia, balance: netAsia,
     liwaCount: Math.round(sold.filter(e=>e.category==='لواء').reduce((s,e)=>s+e.asia,0) / LIWA_ASIA),
     farisCount: Math.round(sold.filter(e=>e.category==='فارس').reduce((s,e)=>s+e.asia,0) / FARIS_ASIA),
     customCount: sold.filter(e=>e.category==='مخصص').length,
-    cost, revenue, profit, commission, total: profit + commission
+    cost, revenue, grossProfit, partnerCut, profit, commission, total: profit + commission
   };
 }
 
@@ -1227,15 +1256,19 @@ function fillRateInputs(){
   $('buyRate').value = rates.buy;
   $('sellRate').value = rates.sell;
   $('commissionRate').value = rates.commission;
+  $('partnerPct').value = partner.partnerPct;
+  $('partnerFrom').value = partner.partnerFrom;
 }
 async function loadRates(){
   try{
     const ref = doc(db, 'users', currentUid, 'settings', 'rates');
     const snap = await getDoc(ref);
     if(snap.exists()){
-      rates = { ...DEFAULT_RATES, ...snap.data() };
+      const data = snap.data();
+      rates = { ...DEFAULT_RATES, buy: data.buy ?? DEFAULT_RATES.buy, sell: data.sell ?? DEFAULT_RATES.sell, commission: data.commission ?? DEFAULT_RATES.commission };
+      partner = { ...DEFAULT_PARTNER, ...(data.partnerPct !== undefined ? { partnerPct: data.partnerPct } : {}), ...(data.partnerFrom !== undefined ? { partnerFrom: data.partnerFrom } : {}) };
     } else {
-      await setDoc(ref, rates);
+      await setDoc(ref, { ...rates, ...partner });
     }
   }catch(err){ console.error(err); }
   fillRateInputs();
@@ -1251,13 +1284,24 @@ async function saveRates(){
     sell: valid(newSell, rates.sell),
     commission: valid(newComm, rates.commission)
   };
+  const pPct = parseFloat($('partnerPct').value);
+  const nextPartner = {
+    partnerPct: (isNaN(pPct) || pPct < 0 || pPct > 100) ? partner.partnerPct : pPct,
+    partnerFrom: $('partnerFrom').value || partner.partnerFrom
+  };
   const changed = next.buy !== rates.buy || next.sell !== rates.sell || next.commission !== rates.commission;
+  const partnerChanged = nextPartner.partnerPct !== partner.partnerPct || nextPartner.partnerFrom !== partner.partnerFrom;
   rates = next;
+  partner = nextPartner;
   fillRateInputs();
   render();
-  if(!changed) return false;
+  if(partnerChanged && !changed){
+    try{ await setDoc(doc(db, 'users', currentUid, 'settings', 'rates'), { ...rates, ...partner }); }
+    catch(err){ console.error(err); toast('تعذر الحفظ، تأكد من الاتصال'); }
+  }
+  if(!changed) return partnerChanged;
   try{
-    await setDoc(doc(db, 'users', currentUid, 'settings', 'rates'), rates);
+    await setDoc(doc(db, 'users', currentUid, 'settings', 'rates'), { ...rates, ...partner });
     const info = todayDateInfo();
     await addDoc(collection(db, 'users', currentUid, 'rateHistory'), {
       buy: rates.buy, sell: rates.sell, commission: rates.commission,
@@ -1426,6 +1470,7 @@ function render(){
   setText('chipBuy', buy);
   setText('chipSell', sell);
   setText('chipComm', comm);
+  setText('chipPartner', partnerPct());
   setText('heroCommissionRule', `(${comm}$ لكل 100 ألف تعبئة)`);
   setText('monthLabel', monthLabelOf(selectedMonth));
   setText('summaryMonth', monthName(selectedMonth));
@@ -1442,6 +1487,10 @@ function render(){
     ? `${t.liwaCount} لواء · ${t.farisCount} فارس${t.customCount ? ' · '+t.customCount+' مخصص' : ''}`
     : 'لا توجد عمليات');
   setMoney('heroProfit', t.profit);
+  const showPartner = partnerPct() > 0 && !!partner.partnerFrom && t.partnerCut !== 0;
+  $('heroPartnerRow').hidden = !showPartner;
+  setText('heroPartner', '−' + fmtMoney(Math.abs(t.partnerCut)));
+  setText('heroPartnerRule', `(${partnerPct()}% من ربح البيع)`);
   setText('heroCommission', '+' + fmtMoney(t.commission));
   setMoney('heroTotal', t.total);
   setText('heroSold', fmtNum(t.soldAsia));
@@ -1455,7 +1504,7 @@ function render(){
     if(!dailyMap[iso]) dailyMap[iso] = { sold:0, fill:0, profit:0, commission:0, display: displayOfEntry(e) };
     if(e.type==='sale') dailyMap[iso].sold += e.asia;
     else dailyMap[iso].fill += e.asia;
-    dailyMap[iso].profit += entryProfit(e);
+    dailyMap[iso].profit += entryMyProfit(e);
     dailyMap[iso].commission += entryCommission(e);
   });
   const dailyKeysAsc = Object.keys(dailyMap).filter(Boolean).sort();
@@ -1472,6 +1521,7 @@ function render(){
   setMoney('weekTile', wt.profit);
   setText('weekTileSub', `+ ${fmtMoney(wt.commission)} نسبة`);
   setMoney('weekProfit', wt.profit);
+  setMoney('weekPartner', wt.partnerCut);
   setText('weekCommission', fmtMoney(wt.commission));
   setMoney('weekTotal', wt.total);
   setText('weekSold', fmtNum(wt.soldAsia));
@@ -1486,6 +1536,8 @@ function render(){
   setMoney('statCost', t.cost);
   setMoney('statRevenue', t.revenue);
   setMoney('statProfit', t.profit);
+  setMoney('statGross', t.grossProfit);
+  setMoney('statPartner', t.partnerCut);
   setText('statCommission', fmtMoney(t.commission));
   setMoney('statTotal', t.total);
 
@@ -1541,7 +1593,7 @@ function render(){
     const iso = isoOfEntry(e);
     if(!iso) return;
     if(!allDailyMap[iso]) allDailyMap[iso] = { profit:0, commission:0, display: displayOfEntry(e) };
-    allDailyMap[iso].profit += entryProfit(e);
+    allDailyMap[iso].profit += entryMyProfit(e);
     allDailyMap[iso].commission += entryCommission(e);
   });
   const goldenDays = Object.keys(allDailyMap).map(iso=>{
@@ -1659,6 +1711,8 @@ $('addFill').addEventListener('click', async ()=>{
 $('buyRate').addEventListener('change', saveRates);
 $('sellRate').addEventListener('change', saveRates);
 $('commissionRate').addEventListener('change', saveRates);
+$('partnerPct').addEventListener('change', saveRates);
+$('partnerFrom').addEventListener('change', saveRates);
 $('savePricesBtn').addEventListener('click', async ()=>{
   await saveRates();
   toast('تم حفظ الأسعار');
